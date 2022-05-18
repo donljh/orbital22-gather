@@ -1,0 +1,26 @@
+{
+  "name": "orbital22-gather",
+  "version": "1.0.0",
+  "description": "A web app project for NUS's summer project Orbital (CP2106). Developed using the MERN (MongoDB, Express, React, Node) stack over Summer 2022 (May - Aug).",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/donljh/orbital22-gather.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/donljh/orbital22-gather/issues"
+  },
+  "homepage": "https://github.com/donljh/orbital22-gather#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mongoose": "^6.3.3"
+  }
+}
