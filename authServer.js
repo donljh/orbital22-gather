@@ -1,10 +1,19 @@
-require("dotenv").config();
+require('dotenv').config();
 const app = require('./app'); // App setup (connection to DB, etc.)
 
 const bcrypt = require('bcryptjs/dist/bcrypt');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+const { auth, 
+  generateAccessToken,
+  generateRefreshToken,
+  sendAccessToken,
+  sendRefreshToken 
+} = require('./middleware/auth');
 
 const User = require('./models/User');
+
+app.use(cookieParser());
 
 const PORT = process.env.AUTH_PORT || 4000;
 
@@ -37,8 +46,6 @@ app.post('/register', async (req, res) => {
       email: email,
       password: hashedPassword,
     })
-
-    console.log(await User.find());
 
     res.status(201).json({ user_id : user._id});
   } catch (err) {
@@ -83,7 +90,7 @@ app.post('/login', async (req, res) => {
     // Access token as a regular response
     // Refresh token as a cookie
     sendRefreshToken(res, refreshToken);
-    sendAccessToken(req, res, accessToken);
+    sendAccessToken(res, accessToken);
 
   } catch (err) {
     console.log(err.message);
@@ -93,38 +100,90 @@ app.post('/login', async (req, res) => {
 
 // Logout a user
 app.post('/logout', async (req, res) => {
+  try {
+    // Remove stored refresh token from database
+    const user_id = auth(req);
+    const user = await User.findById(user_id);
+    user.token = '';
+    await user.save();
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+
+  // Clear cookies
   res.clearCookie('refreshtoken');
-  res.send({ message: 'Logged out.'})
+  res.send({ message: 'You have logged out.'})
+})
+
+// Get a new access token using refresh token
+app.post('/refresh_token', async (req, res) => {
+  const token = req.cookies.refreshtoken;
+
+  try {
+    // No refresh token, give empty access token
+    if (!token) return res.json({ accessToken: '' });
+
+    let payload = null;
+    try {
+      payload = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    } catch (err) {
+      return res.json({ accessToken: '' });
+    }
+
+    // Check if user exists, and that token match
+    const user = await User.findById(payload.user_id);
+
+    if (!user || user.token !== token) {
+      return res.json({ accessToken: '' });
+    }
+
+    // Token exist, create new refresh and access tokens
+    const accessToken = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
+
+    // Put refresh token in database
+    user.token = refreshToken;
+    await user.save();
+    
+    // Send tokens:
+    // Access token as a regular response
+    // Refresh token as a cookie
+    sendRefreshToken(res, refreshToken);
+    sendAccessToken(res, accessToken);
+
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ message : err.message });
+  }
+})
+
+// Deregister a user
+app.delete('/deregister', async (req, res) => {
+  try {
+    const user_id = auth(req);
+    const user = await User.deleteOne({ _id: user_id });
+    res.status(200).json({ message: "User has been deleted"});
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ message : err.message });
+  }
+})
+
+// Testing a protected route
+app.post('/protected', async (req, res) => {
+  try {
+    const user_id = auth(req);
+
+    if (user_id === null) {
+      return res.status(401).json({ 
+        message: "You have to login to access this page."
+      });
+    }
+
+    res.status(200).json({ data: "sample data"});
+  } catch (err) {
+    res.status(500).json({ message: err.message});
+  }
 })
 
 
-
-function generateAccessToken(user_id) {
-  console.log("Generating access token...")
-  return jwt.sign({ user_id }, 
-    process.env.ACCESS_TOKEN_SECRET, 
-    { expiresIn: "15m"});
-}
-
-function generateRefreshToken(user_id) {
-  console.log("Generating refresh token...")
-  return jwt.sign({ user_id },
-    process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: "7d"});
-}
-
-const sendAccessToken = (req, res, accessToken) => {
-  console.log("Sending access token...")
-  res.json({
-    accessToken,
-    email: req.body.email.toLowerCase()
-  })
-}
-
-const sendRefreshToken = (res, refreshToken) => {
-  console.log("Sending refresh token...")
-  res.cookie('refreshtoken', refreshToken, {
-    httpOnly: true,
-    path: '/refresh_token'
-  })
-}
