@@ -4,8 +4,9 @@
   "description": "A web app project for NUS's summer project Orbital (CP2106). Developed using the MERN (MongoDB, Express, React, Node) stack over Summer 2022 (May - Aug).",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server",
+    "dev" : "nodemon server",
+    "devAuth" : "nodemon authServer"
   },
   "repository": {
     "type": "git",
@@ -19,8 +20,13 @@
   },
   "homepage": "https://github.com/donljh/orbital22-gather#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
   }
 }

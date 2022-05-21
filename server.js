@@ -1,17 +1,8 @@
-require('dotenv').config();
+const app = require('./app'); // App setup (connection to DB, etc.)
+const PORT = process.env.RESOURCE_PORT || 5000;
 
-const express = require('express');
-const app = express();
-const mongoose = require('mongoose');
 
-mongoose.connect(process.env.DB_URL_NOADMIN);
-const db = mongoose.connection;
+// Set server to listen
+app.listen(PORT, () => console.log(`Resource server running on port ${PORT}`));
 
-db.on('error', e => console.error(e));
-db.once('open', e => console.log('Connected to DB'));
-
-app.listen(3000, () => console.log('Server Started'));
-
-app.use(express.json())
-
-app.use("/users", require('./routes/users'));
+app.use("/user", require('./routes/users'));
