@@ -10,11 +10,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  dateJoined: {
-    type: Date,
-    required: true,
-    default: Date.now,
-  },
+  profile: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Profile'
+  }
 })
 
 module.exports = mongoose.model('User', userSchema);
