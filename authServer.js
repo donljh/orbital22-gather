@@ -42,12 +42,16 @@ app.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     
     // Create user in the database
-    const user = await User.create({
+    const newUser = await User.create({
       email: email,
       password: hashedPassword,
     })
 
-    res.status(201).json({ user_id : user._id});
+    const accessToken = generateAccessToken(newUser.id);
+    const refreshToken = generateRefreshToken(newUser.id);
+
+    sendRefreshToken(res, refreshToken);
+    sendAccessToken(res, accessToken, 201);
   } catch (err) {
     res.status(500).send({ message: err.message});
   }
@@ -66,53 +70,44 @@ app.post('/login', async (req, res) => {
     }
 
     // Validate if user exists
-    const user = await User.findOne({ email });
-    if (!user) {
+    const currentUser = await User.findOne({ email });
+    if (!currentUser) {
       return res.status(400).send("Invalid email or password");
     }
 
     // Check if password matches
-    if (!(await bcrypt.compare(password, user.password))) {
+    if (!(await bcrypt.compare(password, currentUser.password))) {
       return res.status(400).send("Invalid email or password");
     }
 
     // User exists and password matches, create access/refresh token
     // Access token --> short lifetime
     // Refresh token --> long lifetime
-    const accessToken = generateAccessToken(user._id);
-    const refreshToken = generateRefreshToken(user._id);
-
-    // Put refresh token in database
-    user.token = refreshToken;
-    await user.save();
+    const accessToken = generateAccessToken(currentUser.id);
+    const refreshToken = generateRefreshToken(currentUser.id);
 
     // Send tokens:
     // Access token as a regular response
     // Refresh token as a cookie
     sendRefreshToken(res, refreshToken);
-    sendAccessToken(res, accessToken);
+    sendAccessToken(res, accessToken, 200);
 
   } catch (err) {
-    console.log(err.message);
-    res.status(500).json({ message : err.message });
+    console.log("Login failed: " + err.message);
+    res.status(500).json({ message : "Server Error" });
   }
 })
 
 // Logout a user
-app.post('/logout', async (req, res) => {
+app.post('/logout', auth, async (req, res) => {
   try {
-    // Remove stored refresh token from database
-    const user_id = auth(req);
-    const user = await User.findById(user_id);
-    user.token = '';
-    await user.save();
+    // Clear cookies
+    res.clearCookie('refreshtoken');
+    return res.status(200).send({ message: 'You have logged out.'})
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    console.log('Logout failed: ' + err.message);
+    return res.status(500).json({ message: 'Server Error' });
   }
-
-  // Clear cookies
-  res.clearCookie('refreshtoken');
-  res.send({ message: 'You have logged out.'})
 })
 
 // Get a new access token using refresh token
@@ -124,6 +119,7 @@ app.post('/refresh_token', async (req, res) => {
     if (!token) return res.json({ accessToken: '' });
 
     let payload = null;
+
     try {
       payload = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
     } catch (err) {
@@ -131,50 +127,43 @@ app.post('/refresh_token', async (req, res) => {
     }
 
     // Check if user exists, and that token match
-    const user = await User.findById(payload.user_id);
+    const user = await User.findById(payload.user.id);
 
-    if (!user || user.token !== token) {
+    if (!user) {
       return res.json({ accessToken: '' });
     }
 
     // Token exist, create new refresh and access tokens
-    const accessToken = generateAccessToken(user._id);
-    const refreshToken = generateRefreshToken(user._id);
+    const accessToken = generateAccessToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
 
-    // Put refresh token in database
-    user.token = refreshToken;
-    await user.save();
-    
     // Send tokens:
     // Access token as a regular response
     // Refresh token as a cookie
     sendRefreshToken(res, refreshToken);
-    sendAccessToken(res, accessToken);
+    sendAccessToken(res, accessToken, 200);
 
   } catch (err) {
-    console.log(err.message);
-    res.status(500).json({ message : err.message });
+    console.log("Token refresh failed: " + err.message);
+    res.status(500).json({ message : "Server Error" });
   }
 })
 
 // Deregister a user
-app.delete('/deregister', async (req, res) => {
+app.delete('/deregister', auth, async (req, res) => {
   try {
-    const user_id = auth(req);
-    const user = await User.deleteOne({ _id: user_id });
+    await User.deleteOne({ id: req.user.id });
     res.status(200).json({ message: "User has been deleted"});
   } catch (err) {
-    console.log(err.message);
-    res.status(500).json({ message : err.message });
+    console.log("Deregister failed: " + err.message);
+    res.status(500).json({ message : "Server Error" });
   }
 })
 
 // Testing a protected route
-app.post('/protected', async (req, res) => {
+app.post('/protected', auth, async (req, res) => {
   try {
-    const user_id = auth(req);
-
-    if (user_id === null) {
+    if (req.user.id === null) {
       return res.status(401).json({ 
         message: "You have to login to access this page."
       });
