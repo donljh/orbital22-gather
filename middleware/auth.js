@@ -13,12 +13,12 @@ const auth = (req, res, next) => {
   const token = authorization.split(' ')[1];
 
   try {
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
       if (err) {
         return res.status(401).json({ message: "Invalid token, unauthorized access."})
       }
 
-      req.user = user;
+      req.user = payload.user;
       next();
     })
   } catch (err) {
@@ -31,7 +31,7 @@ function generateAccessToken(user_id) {
   let payload = {user: { id: user_id } };
   return jwt.sign(payload, 
     process.env.ACCESS_TOKEN_SECRET, 
-    { expiresIn: "1m"});
+    { expiresIn: "15m"});
 }
 
 function generateRefreshToken(user_id) {

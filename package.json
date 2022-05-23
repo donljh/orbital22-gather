@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server",
-    "dev": "nodemon server",
+    "dev": "nodemon resourceServer",
     "devAuth": "nodemon authServer"
   },
   "repository": {

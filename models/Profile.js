@@ -3,15 +3,11 @@ const mongoose = require('mongoose');
 const profileSchema = new mongoose.Schema({
   user: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User'
-  },
-  dateJoined: {
-    type: Date,
-    required: true,
-    default: Date.now,
+    ref: 'User',
+    unique: true,
   },
   name: { 
-    String,
+    type: String,
     required: true,
   },
   events: [
@@ -34,4 +30,4 @@ const profileSchema = new mongoose.Schema({
   ]
 })
 
-module.exports = mongoose.model('Profile', userSchema);
+module.exports = mongoose.model('Profile', profileSchema);
