@@ -6,3 +6,4 @@ const PORT = process.env.RESOURCE_PORT || 5000;
 app.listen(PORT, () => console.log(`Resource server running on port ${PORT}`));
 
 app.use("/user", require('./routes/users'));
+app.use("/profile", require('./routes/profiles'));

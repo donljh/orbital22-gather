@@ -34,7 +34,7 @@ router.get('/all', userMW, async (req, res) => {
 router.patch('/change_email', userMW, async (req, res) => {
   try {
     // Check if there is email input
-    if (req.body.email === null) {
+    if (!req.body.email) {
       return res.status(400).json({ 
         message: 'Bad request, email input required.'
       });
@@ -66,10 +66,11 @@ router.patch('/change_email', userMW, async (req, res) => {
   }
 });
 
+// PATCH the current user's password
 router.patch('/change_password', userMW, async (req, res) => {
   try {
     // Check if there is password input
-    if (req.body.password === null) {
+    if (!req.body.password) {
       return res.status(400).json({ message: 'Bad request, password input required.'});
     }
 

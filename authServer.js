@@ -23,12 +23,13 @@ app.listen(PORT, () => console.log(`Authentication server running on port ${PORT
 
 // Register a user and create profile
 app.post('/register', async (req, res) => {
-  // Get user input from request body
-  const email = req.body.email.toLowerCase();
-  const password = req.body.password;
-  const name = req.body.name;
-
   try {
+    // Get user input from request body
+    const email = req.body.email
+    console.log(email);
+    const password = req.body.password;
+    const name = req.body.name;
+    
     // Validate user input
     if (!(email && password && name)) {
       return res.status(400).send('Email, password and name inputs are required')
@@ -68,11 +69,11 @@ app.post('/register', async (req, res) => {
 
 // Login a user
 app.post('/login', async (req, res) => {
-  // Get user input from request body
-  const email = req.body.email.toLowerCase();
-  const password = req.body.password;
-  
   try {
+    // Get user input from request body
+    const email = req.body.email.toLowerCase();
+    const password = req.body.password;
+    
     // Validate user input
     if (!(email && password)) {
       return res.status(400).send('Email and password input are required');
@@ -80,7 +81,7 @@ app.post('/login', async (req, res) => {
 
     // Validate if user exists
     const currentUser = await User.findOne({ email });
-    if (!currentUser) {
+    if (currentUser === null) {
       return res.status(400).send('Invalid email or password');
     }
 
@@ -121,9 +122,9 @@ app.post('/logout', auth, async (req, res) => {
 
 // Get a new access token using refresh token
 app.post('/refresh_token', async (req, res) => {
-  const token = req.cookies.refreshtoken;
-
   try {
+    const token = req.cookies.refreshtoken;
+
     // No refresh token, give empty access token
     if (!token) return res.json({ accessToken: '' });
 
@@ -138,7 +139,7 @@ app.post('/refresh_token', async (req, res) => {
     // Check if user exists, and that token match
     const user = await User.findById(payload.user.id);
 
-    if (!user) {
+    if (user === null) {
       return res.json({ accessToken: '' });
     }
 
