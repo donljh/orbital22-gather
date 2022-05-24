@@ -2,7 +2,7 @@
 A web app project for NUS's summer project Orbital (CP2106). Developed using the MERN (MongoDB, Express, React, Node) stack over Summer 2022 (May - Aug).
 
 ## Team Members:
-Tang Kyn-Han
+Tang Kyn-Han  
 Lim Jun Hong, Don
 
 ## Documentation:
