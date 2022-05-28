@@ -4,7 +4,7 @@
   "description": "A web app project for NUS's summer project Orbital (CP2106). Developed using the MERN (MongoDB, Express, React, Node) stack over Summer 2022 (May - Aug).",
   "main": "server.js",
   "scripts": {
-    "start": "node server",
+    "start": "concurrently --kill-others 'npm:dev' 'npm:devAuth' 'npm:--prefix ../client/ start'",
     "dev": "nodemon resourceServer",
     "devAuth": "nodemon authServer"
   },
@@ -30,6 +30,7 @@
     "mongoose": "^6.3.3"
   },
   "devDependencies": {
+    "concurrently": "^7.2.1",
     "nodemon": "^2.0.16"
   }
 }
