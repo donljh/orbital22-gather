@@ -11,9 +11,9 @@ function Dashboard(props) {
 
   return (
     <div className="dashboard">
-      <h1>Welcome {profile.name}</h1>
+      <h1>Welcome, {profile.name}.</h1>
       <h2>Gather Dashboard, Coming Soon.</h2>
-      <button><Link to="protected">Click for sample protected data.</Link></button>
+      <Link className="protected" to="protected"><button>Click for sample protected data</button></Link>
     </div>
   )
 }

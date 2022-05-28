@@ -24,7 +24,7 @@ const Protected = () => {
           authorization: `Bearer ${user.accessToken}`,
         }
       })).json();
-      if (result.data) setContent(result.data);
+      if (result.data) setContent(result.data.toUpperCase());
     }
     fetchProtected();
   }, [user])
@@ -33,7 +33,7 @@ const Protected = () => {
     <div className="protected">
       <h1>Currently Accessing Protected Data:</h1>
       <h2>{content}</h2>
-      <button><Link to="/">Go back to dashboard</Link></button>
+      <Link to="/" className="protected"><button>Go back to dashboard</button></Link>
     </div>
   )
 }

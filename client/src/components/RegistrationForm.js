@@ -75,7 +75,7 @@ const RegisterForm = () => {
       <div className='login-wrapper'>
           <form onSubmit={handleSubmit}>
               <h2>Register</h2>
-              <h3 style={{color: 'red'}}>{error}</h3>
+              <p style={{color: 'red'}}>{ error ? '* ' + error : ''}</p>
               <div className='login-input'>
                   <input
                       value={name}

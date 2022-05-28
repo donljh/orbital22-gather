@@ -59,6 +59,26 @@ ul li {
   margin: 10px;
 }
 
+.protected button,
+button.logout {
+  width: 250px;
+  height: 50px;
+  margin-bottom: 25px;
+  background: transparent;
+  color: white;
+  font-size: 12px;
+  border: 3px solid black;
+  border-radius: 5px;
+  text-transform: uppercase;
+  font-weight: bold;
+  transition: ease-in-out 0.2s;
+}
+
+.protected button:hover,
+button.logout:hover {
+  box-shadow: inset 250px 0 0 0 rgba(0,0,0, 0.75);
+}
+
 a {
   color: #318ba3;
   text-decoration: none;

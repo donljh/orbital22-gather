@@ -35,7 +35,7 @@ function GatherApp(props) {
         <Dashboard path="/" profile={profile}></Dashboard>
         <Protected path="protected"></Protected>
       </Router>
-      <button onClick={props.logoutCallback}>Logout</button>
+      <button className="logout" onClick={props.logoutCallback}>Logout</button>
     </div>
   )
 }
