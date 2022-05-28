@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Router, navigate } from '@reach/router';
+import { navigate } from '@reach/router';
 
-import Content from './components/Content';
-import Login from './components/Login';
-import Navigation from './components/Navigation';
-import Protected from './components/Protected';
-import Register from './components/Register';
+import LandingPage from './components/LandingPage';
+import GatherApp from './components/GatherApp';
 
 export const UserContext = React.createContext([]);
 
@@ -26,7 +23,7 @@ function App() {
   // Get new accessToken if a refreshToken exists
   useEffect(() => {
     async function checkRefreshToken() {
-      const result = await (await fetch('http://localhost:4000/refresh_token', {
+      const response = await (await fetch('http://localhost:4000/refresh_token', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -34,25 +31,27 @@ function App() {
         }
       })).json();
       setUser({
-        accessToken: result.accessToken
+        accessToken: response.accessToken, 
       }); 
       setLoading(false);
     }
     checkRefreshToken();
-  }, []);
+    }, [])
 
   if (loading) return <div>Loading...</div>
 
   return (
     <UserContext.Provider value={[user, setUser]}>
-      <div className="app">
-        <Navigation logoutCallback={logoutCallback} />
-        <Router>
-          <Login path="login" />
-          <Register path="register" />
-          <Protected path="protected" />
-          <Content path="/" />
-        </Router>
+      <div className='app'>      
+        { /* Grant access to the application if accesstoken exists, else
+             redirect to login page */
+          user.accessToken 
+          ? <GatherApp 
+            path="/dashboard" 
+            user={user} 
+            logoutCallback={logoutCallback}/>
+          : <LandingPage path="/login" />
+        }
       </div>
     </UserContext.Provider>
   );

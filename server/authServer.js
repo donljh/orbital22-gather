@@ -32,13 +32,13 @@ app.post('/register', async (req, res) => {
     
     // Validate user input
     if (!(email && password && name)) {
-      return res.status(400).send('Email, password and name inputs are required')
+      return res.status(400).json({ message: 'Email, password and name inputs are required' })
     }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).send('A user with that email account already exists');
+      return res.status(409).json({ message: 'A user with that email account already exists' });
     }
 
     // Hash the input password
@@ -76,18 +76,18 @@ app.post('/login', async (req, res) => {
     
     // Validate user input
     if (!(email && password)) {
-      return res.status(400).send('Email and password input are required');
+      return res.status(400).json({ message: 'Email and password input are required' });
     }
 
     // Validate if user exists
     const currentUser = await User.findOne({ email });
     if (currentUser === null) {
-      return res.status(400).send('Invalid email or password');
+      return res.status(400).json({ message: 'Invalid email or password' });
     }
 
     // Check if password matches
     if (!(await bcrypt.compare(password, currentUser.password))) {
-      return res.status(400).send('Invalid email or password');
+      return res.status(400).json({ message: 'Invalid email or password' });
     }
 
     // User exists and password matches, create access/refresh token
@@ -109,10 +109,11 @@ app.post('/login', async (req, res) => {
 })
 
 // Logout a user
-app.post('/logout', auth, async (req, res) => {
+app.post('/logout', async (req, res) => {
   try {
     // Clear cookies
-    res.clearCookie('refreshtoken');
+    console.log(req.cookies)
+    res.clearCookie('refreshtoken', { path: '/refresh_token' });
     return res.status(200).json({ message: 'You have logged out.'})
   } catch (err) {
     console.log('LOGOUT USER FAILED: ' + err.message);

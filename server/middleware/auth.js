@@ -7,13 +7,18 @@ const auth = (req, res, next) => {
 
   // No header
   if (!authorization) {
+    console.log('Tried to access route without authorization')
     return res.status(401).json({ message: "No token, unauthorized access."});
   }
 
+  // Get token from header
   const token = authorization.split(' ')[1];
 
+
+  // Verify incoming token and set requesting user id to be decoded user
   try {
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
+  
       if (err) {
         return res.status(401).json({ message: "Invalid token, unauthorized access."})
       }
@@ -31,7 +36,7 @@ function generateAccessToken(user_id) {
   let payload = {user: { id: user_id } };
   return jwt.sign(payload, 
     process.env.ACCESS_TOKEN_SECRET, 
-    { expiresIn: "15m"});
+    { expiresIn: "2h"});
 }
 
 function generateRefreshToken(user_id) {
