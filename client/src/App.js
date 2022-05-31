@@ -1,59 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { navigate } from '@reach/router';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 
-import LandingPage from './components/LandingPage';
-import GatherApp from './components/GatherApp';
+import useUser from './hooks/useUser';
+
+import Layout from './pages/Layout';
+import Login from './pages/Login';
+import Register from './pages/Register';
+
+import ProtectedRoute from './components/ProtectedRoute';
+import Dashboard from './pages/Dashboard';
 
 export const UserContext = React.createContext([]);
 
+
 function App() {
-  const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(true);
+  // const navigate = useNavigate();
+  const { user } = useUser();
+  console.log(user);
 
-  const logoutCallback = async () => {
-    await fetch('http://localhost:4000/logout', {
-      method: 'POST',
-      credentials: 'include'
-    })
-    // Clear user from context
-    setUser({});
-    navigate('/');
-  }
+  return (  
+    <Routes>
+      <Route path="/" element={<Layout />}>
 
-  // Get new accessToken if a refreshToken exists
-  useEffect(() => {
-    async function checkRefreshToken() {
-      const response = await (await fetch('http://localhost:4000/refresh_token', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })).json();
-      setUser({
-        accessToken: response.accessToken, 
-      }); 
-      setLoading(false);
-    }
-    checkRefreshToken();
-    }, [])
+        {/* public routes */}
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
 
-  if (loading) return <div>Loading...</div>
-
-  return (
-    <UserContext.Provider value={[user, setUser]}>
-      <div className='app'>      
-        { /* Grant access to the application if accesstoken exists, else
-             redirect to login page */
-          user.accessToken 
-          ? <GatherApp 
-            path="/dashboard" 
-            user={user} 
-            logoutCallback={logoutCallback}/>
-          : <LandingPage path="/login" />
-        }
-      </div>
-    </UserContext.Provider>
+        {/* protected routes */}
+        <Route path='dashboard' element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
+      </Route>
+    </Routes>
   );
 }
 

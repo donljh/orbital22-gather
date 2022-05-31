@@ -1,9 +1,10 @@
-import React, { useState, useContext } from 'react';
-import { Link, navigate } from '@reach/router';
-import { UserContext } from '../App';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { axiosAuth } from '../api/axios';
+import useUser from '../hooks/useUser';
 
 /**
- * LoginForm is the component that facilitates the login of new users
+ * Login is the component that facilitates the login of new users
  * 
  * The component accepts fields that represent user credentials and hits the
  * login API on the server backend for authentication.
@@ -13,52 +14,33 @@ import { UserContext } from '../App';
  * Upon unsuccessful login, an error is displayed to notify the user to amend
  * their entered credentials
  */
-const LoginForm = () => {
-  const [user, setUser] = useContext(UserContext);
+const Login = () => {
+  const navigate = useNavigate();
+
+  const { user, setUser } = useUser();
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async e => {
     e.preventDefault();
-    fetch('http://localhost:4000/login', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-          email,
-          password
-      })
-    })
+    const credentials = { email, password };
+    const config = {
+      headers: { 'Content-Type': 'application/json' }    
+    }
+    axiosAuth.post('/login', credentials, config)
     .then(response => {
-      if (response.ok) handleSuccessfulLogin(response);
-      else if (!response.ok) handleUnsuccessfulLogin(response);
+      setUser({ accessToken: response.data.accessToken });
+      navigate('/dashboard')
     })
+    .catch(error => {
+      if (error.response) {
+        setError(error.response.data.message);
+      } else {
+        console.log('Error', error.message);
+      }
+    });
   }
-
-  const handleUnsuccessfulLogin = async (response) => {
-    try {
-      response = await response.json();
-      setError(response.message);
-    } catch (err) {
-      console.log(err.message);
-    }
-  }
-
-  const handleSuccessfulLogin = async (response) => {     
-    try {
-      response = await response.json();
-      setUser({
-        accessToken: response.accessToken
-      })
-      console.log(user.accessToken);
-      navigate('/');
-    } catch (err) {
-      console.log(err.message);
-    }
-  }  
 
   const handleChange = e => {
     if (e.currentTarget.name === 'email') {
@@ -99,4 +81,4 @@ const LoginForm = () => {
   )
 }
 
-export default LoginForm;
+export default Login;

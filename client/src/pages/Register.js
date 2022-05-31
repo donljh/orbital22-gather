@@ -1,9 +1,11 @@
-import React, { useContext, useState } from 'react';
-import { Link, navigate } from '@reach/router';
-import { UserContext } from '../App';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { axiosAuth } from '../api/axios';
+import useUser from '../hooks/useUser';
+
 
 /**
- * RegisterForm is the component that facilitates the registration of new users
+ * Register is the component that facilitates the registration of new users
  * 
  * The component accepts fields that represent user credentials and hits the
  * registration API on the server backend.
@@ -13,8 +15,11 @@ import { UserContext } from '../App';
  * Upon unsuccessful registration, an error is displayed to notify the user to amend
  * their entered credentials
  */
-const RegisterForm = () => {
-  const [user, setUser] = useContext(UserContext);
+const Register = () => {
+  const navigate = useNavigate();
+
+  const { setUser } = useUser();
+
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,44 +27,21 @@ const RegisterForm = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    fetch('http://localhost:4000/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email,
-        password,
-        name
-      })
-    })
+    const credentials = { name, email, password }
+    const config = { headers: { 'Content-Type': 'application/json' }};
+    axiosAuth.post('/register', credentials, config)
     .then(response => {
-      if (response.ok) handleSuccessfulRegistration(response);
-      else if (!response.ok) handleUnsuccessfulRegistration(response);
+      setUser({ accessToken: response.accessToken })
+      navigate('/dashboard');
+    })
+    .catch(error => {
+      if (error.response) {
+        setError(error.response.data.message);
+      } else {
+        console.log('Error', error.message);
+      }
     })
   }
-
-  const handleUnsuccessfulRegistration = async (response) => {
-    try {
-      response = await response.json();
-      setError(response.message);
-    } catch (err) {
-      console.log(err.message);
-    }
-  }
-
-  const handleSuccessfulRegistration = async (response) => {     
-    try {
-      response = await response.json();
-      setUser({
-        accessToken: response.accessToken
-      })
-      console.log(user.accessToken);
-      navigate('/');
-    } catch (err) {
-      console.log(err.message);
-    }
-  }  
 
   const handleChange = e => {
       if (e.currentTarget.name === 'email') {
@@ -105,9 +87,9 @@ const RegisterForm = () => {
                   <button type='submit'>Register</button>
               </div>
           </form>
-          <p>Already have an account? <Link to="/">Login</Link> here</p>
+          <p>Already have an account? <Link to="/login">Login</Link> here</p>
       </div>
   )
 }
 
-export default RegisterForm;
+export default Register;
