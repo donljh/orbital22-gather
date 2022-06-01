@@ -1,16 +1,18 @@
 import { axiosAuth } from '../api/axios'
 import useUser from './useUser';
 
+/**
+ * The useRefreshToken hook returns a function to grab and replace the current
+ * access and refresh token from the backend server API.
+ */
 const useRefreshToken = () => {
   const { setUser } = useUser();
 
   const refresh = async () => {
-    const response = await axiosAuth.get('/refresh_token', {
+    const response = await axiosAuth.post('/refresh_token', [], {
       withCredentials: true
     });
     setUser(prev => {
-      console.log(JSON.stringify(prev));
-      console.log(response.data.accessToken);
       return { ...prev, accessToken: response.data.accessToken}
     })
     return response.data.accessToken;

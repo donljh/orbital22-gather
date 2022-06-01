@@ -1,33 +1,34 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-import useUser from './hooks/useUser';
+import ProtectedRoute from './components/ProtectedRoute';
+import PersistentLogin from './components/PersistentLogin';
 
-import Layout from './pages/Layout';
+import AppLayout from './pages/AppLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
-
-import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
+import Protected from './pages/Protected';
 
 export const UserContext = React.createContext([]);
 
 
 function App() {
-  // const navigate = useNavigate();
-  const { user } = useUser();
-  console.log(user);
 
   return (  
     <Routes>
-      <Route path="/" element={<Layout />}>
+      <Route path="/" element={<AppLayout />}>
 
         {/* public routes */}
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
 
         {/* protected routes */}
-        <Route path='dashboard' element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
+        <Route element={<PersistentLogin />}>
+          <Route path='' element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
+          <Route path='protected' element={<ProtectedRoute> <Protected /> </ProtectedRoute>} />
+        </Route>
+
       </Route>
     </Routes>
   );

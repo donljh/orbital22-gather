@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import useUser from '../hooks/useUser';
-import useAxiosResource from '../hooks/useAxiosResource';
 import { axiosAuth } from '../api/axios';
 
 /**
@@ -15,17 +14,21 @@ import { axiosAuth } from '../api/axios';
  */
 const Protected = () => {
   const { user } = useUser();
-  const [content, setContent] = useState('You need to login');
-  
-  const axiosResource = useAxiosResource();
-
+  const [content, setContent] = useState('');
 
   useEffect(() => {
     async function fetchProtected() {
-      axiosAuth.post('/protected').then(res => setContent(res.data.data))
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.accessToken}`,
+        }
+      }
+      axiosAuth.post('/protected', [], config
+      ).then(res => setContent(res.data.data))
     }
     fetchProtected();
-  }, [user, axiosResource])
+  }, [user, setContent])
 
   return (
     <div className="protected">

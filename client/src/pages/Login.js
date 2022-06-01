@@ -4,34 +4,43 @@ import { axiosAuth } from '../api/axios';
 import useUser from '../hooks/useUser';
 
 /**
- * Login is the component that facilitates the login of new users
+ * Login is the page component that contains the login form faciliating 
+ * login of  users
  * 
- * The component accepts fields that represent user credentials and hits the
- * login API on the server backend for authentication.
+ * The form accepts fields that represent user credentials and hits the
+ * login API on the server backend with the given credentials
  * 
- * Upon successful login, the user is directed to the application's dashboard
+ * Upon successful login, the user is directed to the dashboard
  * 
- * Upon unsuccessful login, an error is displayed to notify the user to amend
- * their entered credentials
+ * Upon unsuccessful login, an error is displayed to notify the user to 
+ * amend their entered credentials
  */
 const Login = () => {
   const navigate = useNavigate();
+  const { setUser } = useUser();
 
-  const { user, setUser } = useUser();
   const [error, setError] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [credentials, setCredentials] = useState({
+    email: '',
+    password: '',
+  })
+
+  const { email, password } = credentials;
+
+  const onChange = e => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value })
+  }
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const credentials = { email, password };
     const config = {
-      headers: { 'Content-Type': 'application/json' }    
+      headers: { 'Content-Type': 'application/json' },    
+      withCredentials: true
     }
     axiosAuth.post('/login', credentials, config)
     .then(response => {
       setUser({ accessToken: response.data.accessToken });
-      navigate('/dashboard')
+      navigate('/')
     })
     .catch(error => {
       if (error.response) {
@@ -42,14 +51,6 @@ const Login = () => {
     });
   }
 
-  const handleChange = e => {
-    if (e.currentTarget.name === 'email') {
-      setEmail(e.currentTarget.value);
-    } else {
-      setPassword(e.currentTarget.value);
-    }
-  }
-
   return (
     <div className='login-wrapper'>
       <form onSubmit={handleSubmit}>
@@ -58,7 +59,7 @@ const Login = () => {
         <div className='login-input'>
           <input
               value={email}
-              onChange={handleChange}
+              onChange={onChange}
               type='email'
               name='email'
               placeholder='Email'
@@ -67,7 +68,7 @@ const Login = () => {
           />
           <input
               value={password}
-              onChange={handleChange}
+              onChange={onChange}
               type='password'
               name='password'
               placeholder='Password'

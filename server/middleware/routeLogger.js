@@ -1,5 +1,7 @@
 const routeLogger = (req, res, next) => {
-  console.log('API hit at: ' + req.originalUrl);
+  const d = new Date();
+  const now = `[${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}]`
+  console.log(`${now} API hit at: ` + req.originalUrl);
   next();
 }
 

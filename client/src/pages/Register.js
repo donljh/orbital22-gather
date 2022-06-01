@@ -3,36 +3,42 @@ import { Link, useNavigate } from 'react-router-dom';
 import { axiosAuth } from '../api/axios';
 import useUser from '../hooks/useUser';
 
-
 /**
- * Register is the component that facilitates the registration of new users
+ * Register is the page that contains the registration form faciliating 
+ * registration of new users
  * 
- * The component accepts fields that represent user credentials and hits the
- * registration API on the server backend.
+ * The form accepts fields that represent user credentials and hits the
+ * registration API on the server backend with the given credentials
  * 
- * Upon successful registration, the user is directed to the application's dashboard
+ * Upon successful registration, the user is directed to the dashboard
  * 
- * Upon unsuccessful registration, an error is displayed to notify the user to amend
- * their entered credentials
+ * Upon unsuccessful registration, an error is displayed to notify the user to 
+ * amend their entered credentials
  */
 const Register = () => {
   const navigate = useNavigate();
-
   const { setUser } = useUser();
 
   const [error, setError] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [credentials, setCredentials] = useState({
+    name: '',
+    email: '',
+    password: '',
+  })
+  const { name, email, password } = credentials;
+
+
+  const onChange = e => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value })
+  }
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const credentials = { name, email, password }
     const config = { headers: { 'Content-Type': 'application/json' }};
     axiosAuth.post('/register', credentials, config)
     .then(response => {
-      setUser({ accessToken: response.accessToken })
-      navigate('/dashboard');
+      setUser({ accessToken: response.data.accessToken })
+      navigate('/');
     })
     .catch(error => {
       if (error.response) {
@@ -43,16 +49,6 @@ const Register = () => {
     })
   }
 
-  const handleChange = e => {
-      if (e.currentTarget.name === 'email') {
-          setEmail(e.currentTarget.value);
-      } else if (e.currentTarget.name === 'password') {
-          setPassword(e.currentTarget.value);
-      } else if (e.currentTarget.name === 'name') {
-          setName(e.currentTarget.value);
-      }
-  }
-
   return(
       <div className='login-wrapper'>
           <form onSubmit={handleSubmit}>
@@ -61,7 +57,7 @@ const Register = () => {
               <div className='login-input'>
                   <input
                       value={name}
-                      onChange={handleChange}
+                      onChange={onChange}
                       type='text'
                       name='name'
                       placeholder='Name'
@@ -69,7 +65,7 @@ const Register = () => {
                   />
                   <input
                       value={email}
-                      onChange={handleChange}
+                      onChange={onChange}
                       type='email'
                       name='email'
                       placeholder='Email'
@@ -78,7 +74,7 @@ const Register = () => {
                   />
                   <input
                       value={password}
-                      onChange={handleChange}
+                      onChange={onChange}
                       type='password'
                       name='password'
                       placeholder='Password'

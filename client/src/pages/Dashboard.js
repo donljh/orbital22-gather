@@ -1,26 +1,23 @@
 import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import useUser from "../hooks/useUser";
-import useAxiosResource from '../hooks/useAxiosResource';
+import useAxiosRes from '../hooks/useAxiosRes';
 
 /**
- * Dashboard is the main display/home page of the web application when a user
- * is successfully logged in.
+ * Dashboard is the main display page of the web application when a user
+ * is successfully logged in/registered.
  */
 function Dashboard() {
-  // Passed down user profile
   const { user } = useUser();
-  const axiosResource = useAxiosResource();
+  const axiosRes = useAxiosRes();
   const [profile, setProfile] = useState({});
 
   useEffect(() => {
-    axiosResource.get('/profile').then(response => {
-      console.log(response)
+    axiosRes.get('/profile').then(response => {
       setProfile(response.data)
     })   
-  }, [user])
+  }, [user, axiosRes])
   
-
   return (
     <div className="dashboard">
       <h1>Welcome, {profile.name}.</h1>
