@@ -9,9 +9,9 @@ import { Outlet } from 'react-router-dom';
  */
 function AppLayout() {
   return (
-      <main className="app">
-          <Outlet />
-      </main>
+    <main className="app">
+      <Outlet />
+    </main>
   )
 }
 

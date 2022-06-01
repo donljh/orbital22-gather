@@ -9,7 +9,7 @@ const useLogout = () => {
   const logout = async () => {
     await axiosAuth.post('/logout');
     setUser({});
-    navigate('/');
+    navigate('/login');
   }
 
   return logout

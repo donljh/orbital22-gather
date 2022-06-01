@@ -31,7 +31,7 @@ const PersistentLogin = () => {
     }
 
     !user?.accessToken ? verifyRefreshToken() : setLoading(false);
-  }, [user.accessToken, refresh]);
+  }, []);
 
   return (
     <>
