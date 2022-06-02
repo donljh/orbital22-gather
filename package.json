@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "concurrently --kill-others 'npm:--prefix ./server start' 'npm:--prefix ./client/ start'",
+    "build": "concurrently 'npm install --prefix ./client' 'npm install --prefix ./server' ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
