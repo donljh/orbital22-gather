@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "concurrently --kill-others 'npm:--prefix ./server start' 'npm:--prefix ./client/ start'",
+    "build": "concurrently --kill others 'npm install ./server' 'npm install ./client'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +20,7 @@
   },
   "homepage": "https://github.com/donljh/orbital22-gather#readme",
   "dependencies": {
-    "concurrently": "^7.2.1"
+    "concurrently": "^7.2.1",
+    "frontend": "file:client"
   }
 }
