@@ -1,6 +1,7 @@
-import { Link } from '@reach/router';
-import React, { useEffect, useState, useContext } from 'react';
-import { UserContext } from '../App'
+import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import useUser from '../hooks/useUser';
+import { axiosAuth } from '../api/axios';
 
 /**
  * Protected is the component that represents sample protected user data
@@ -12,22 +13,22 @@ import { UserContext } from '../App'
  * development.
  */
 const Protected = () => {
-  const [user] = useContext(UserContext);
-  const [content, setContent] = useState('You need to login');
+  const { user } = useUser();
+  const [content, setContent] = useState('');
 
   useEffect(() => {
     async function fetchProtected() {
-      const result = await (await fetch('http://localhost:4000/protected', {
-        method: 'POST',
+      const config = {
         headers: {
           'Content-Type': 'application/json',
-          authorization: `Bearer ${user.accessToken}`,
+          'Authorization': `Bearer ${user.accessToken}`,
         }
-      })).json();
-      if (result.data) setContent(result.data.toUpperCase());
+      }
+      axiosAuth.post('/protected', [], config
+      ).then(res => setContent(res.data.data))
     }
     fetchProtected();
-  }, [user])
+  }, [user, setContent])
 
   return (
     <div className="protected">

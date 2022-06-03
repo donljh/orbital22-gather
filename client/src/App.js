@@ -1,59 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import { navigate } from '@reach/router';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 
-import LandingPage from './components/LandingPage';
-import GatherApp from './components/GatherApp';
+import ProtectedRoute from './components/ProtectedRoute';
+import PersistentLogin from './components/PersistentLogin';
+
+import AppLayout from './components/layout/AppLayout';
+import Main from './components/layout/Main';
+
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import Protected from './pages/Protected';
+import Calendar from './pages/Calendar';
+import TaskManager from './pages/TaskManager';
+import Groups from './pages/Groups'
+
 
 export const UserContext = React.createContext([]);
 
+
 function App() {
-  const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(true);
 
-  const logoutCallback = async () => {
-    await fetch('http://localhost:4000/logout', {
-      method: 'POST',
-      credentials: 'include'
-    })
-    // Clear user from context
-    setUser({});
-    navigate('/');
-  }
+  return (  
+    <Routes>
+      <Route path="/" element={<AppLayout />}>
 
-  // Get new accessToken if a refreshToken exists
-  useEffect(() => {
-    async function checkRefreshToken() {
-      const response = await (await fetch('http://localhost:4000/refresh_token', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })).json();
-      setUser({
-        accessToken: response.accessToken, 
-      }); 
-      setLoading(false);
-    }
-    checkRefreshToken();
-    }, [])
+        {/* public routes */}
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
 
-  if (loading) return <div>Loading...</div>
+        {/* protected routes */}
+        <Route element={<PersistentLogin />}>
+          <Route element={<Main />} >
+            <Route path='' element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
+            <Route path='calendar' element={<ProtectedRoute> <Calendar /> </ProtectedRoute>} />
+            <Route path='taskmanager' element={<ProtectedRoute> <TaskManager /> </ProtectedRoute>} />
+            <Route path='groups' element={<ProtectedRoute> <Groups /> </ProtectedRoute>} />
+            <Route path='protected' element={<ProtectedRoute> <Protected /> </ProtectedRoute>} />
+          </Route>
+        </Route>
 
-  return (
-    <UserContext.Provider value={[user, setUser]}>
-      <div className='app'>      
-        { /* Grant access to the application if accesstoken exists, else
-             redirect to login page */
-          user.accessToken 
-          ? <GatherApp 
-            path="/dashboard" 
-            user={user} 
-            logoutCallback={logoutCallback}/>
-          : <LandingPage path="/login" />
-        }
-      </div>
-    </UserContext.Provider>
+      </Route>
+    </Routes>
   );
 }
 
