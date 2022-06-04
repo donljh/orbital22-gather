@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   background-image: linear-gradient(to bottom right, #e15a47, #318ba3, #743192);
   margin: 0;
@@ -9,7 +13,7 @@ body {
 }
 
 .app {
-  text-align: center;
+  /* text-align: center; */
   min-height: 100vh;
   display: flex;
   flex-direction: column;

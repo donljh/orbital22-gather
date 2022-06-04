@@ -1,19 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import useAxiosRes from '../hooks/useAxiosRes';
-import Box from '@mui/material/Box'
-import { Typography, List, ListItem, ListItemText, Divider, Tabs, Tab, Button, Modal, Stack } from '@mui/material/'
-import CreateTaskForm from "../components/CreateTaskForm";
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
-// const overdueTasks = [1, 2, 3].map(n => {
-//   return {title: `Overdue Task ${n}`, description: `Overdue Task Description ${n}`}
-// })
-// const todayTasks = [1, 2, 3].map(n => {
-//   return {title: `Today Task ${n}`, description: `Today Task Description ${n}`}
-// })
-// const upcomingTasks = [1, 2, 3].map(n => {
-//   return {title: `Upcoming Task ${n}`, description: `Upcoming Task Description ${n}`}
-// })
+import CreateTaskForm from '../components/TaskManager/CreateTaskForm';
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Divider from '@mui/material/Divider';
+import Modal from '@mui/material/Modal';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Checkbox from '@mui/material/Checkbox';
+import IconButton from '@mui/material/IconButton';
+
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import EditIcon from '@mui/icons-material/Edit'
+
+const sampleTask = { 
+  _id: "1",
+  title: "Sample Task", 
+  description: 'Sample Task Description', 
+  dueDate: "05 June"}
 
 const modalStyle = {
   position: 'absolute',
@@ -29,58 +36,85 @@ const modalStyle = {
   pb: 3,
 };
 
-const TaskManager = () => {
-  const [category, setCategory] = useState("today");
-  const [tasks, setTasks] = useState([]);
+const TaskManagerHeader = () => {
   const [open, setOpen] = useState(false);
 
   const openCreateTaskForm = () => setOpen(true);
   const closeCreateTaskForm = () => setOpen(false);
 
-  const axiosRes = useAxiosRes();
-
-  const handleChange = (event, newCategory) => {
-    setCategory(newCategory);
-  }
-
-  useEffect(() => {
-    axiosRes.get('/task').then(response => {
-      setTasks(response.data)
-
-    })   
-  }, [axiosRes])
+  const now = new Date().toDateString();
 
   return (
-    <Box 
-      justifyContent={'center'}
-      px={60}
-      py={3}
-      sx={{ flexGrow: 1,
-          boxSizing: 'border-box',
-          border: 1,
-          width: 1,
-          bgcolor: 'lightgrey' }}>  
+    <>
+      <Stack py={2} direction='row' justifyContent='space-between' sx={{borderBottom: '1px #e2e2e2 solid'}}>
+        <Stack spacing={2} direction='row'>
+          <Typography variant='h4' color='#e2e2e2' fontWeight='bold'>Today</Typography>
+          <Divider orientation='vertical' sx={{ background: '#e2e2e2'}} />
+          <Typography variant='h6' sx={{ color: '#676767' }}>{now}</Typography>
+        </Stack>
+        <Button color='success' variant='contained' size='small' onClick={openCreateTaskForm}  sx={{ borderRadius: '20px' }} startIcon={<AddOutlinedIcon />}> New Task </Button>       
+      </Stack> 
 
-      <Stack 
-        sx={{ borderBottom: 1, borderColor: 'divider' }} 
-        direction="horizontal" 
-        justifyContent="space-between">
-        <Tabs value={category} onChange={handleChange} >
-          <Tab label="OVERDUE" value="overdue"/>
-          <Tab label="TODAY" value="today" />
-          <Tab label="UPCOMING" value="upcoming"/>
-        </Tabs>
-        <Button onClick={openCreateTaskForm} startIcon={<AddOutlinedIcon />}>Create New Task</Button>    
-      </Stack>
-    
       <Modal open={open} onClose={closeCreateTaskForm} >
-       <Box sx={modalStyle}>
+        <Box sx={modalStyle}>
           <CreateTaskForm />
-       </Box> 
+        </Box> 
       </Modal>
 
-    </Box>    
+    </>
   )
+}
+
+const TaskCard = (props) => {
+  const {title, description, dueDate} = props.task;
+
+  return (
+    <Card sx={{ backgroundColor: '#282828' }}>
+      <CardContent sx={{ py: 1 }}>
+        <Stack direction="row" justifyContent="space-between">
+          <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis'}} gutterBottom variant="h6" color="#e2e2e2" component="span" fontWeight='semi-bold'>{title}</Typography>
+          <Stack direction="row">
+            <Checkbox disableRipple color="primary"/>
+            <IconButton disableRipple>
+              <EditIcon />
+            </IconButton>
+          </Stack>
+        </Stack>
+        <Typography gutterBottom variant="button" color="#e2e2e2" component="span">{`${dueDate}`}</Typography>
+        <Typography variant="body2" color="#676767" component="p" sx={{ textOverflow: 'ellipsis' }}>{description}</Typography>
+      </CardContent>
+    </Card>
+  )
+}
+
+const TaskManager = () => {
+  const [tasks, setTasks] = useState([sampleTask]);
+
+  const axiosRes = useAxiosRes();
+
+
+  // useEffect(() => {
+  //   axiosRes.get('/task').then(response => {      
+  //     setTasks(prevTasks => [...prevTasks, ...response.data]);
+  //     console.log(tasks)
+  //   })   
+  // }, [axiosRes])
+
+  return (
+    <>
+      <Stack justifyContent='center' mt={3} spacing={2} direction='row' divider={<Divider orientation='vertical' flexItem sx={{ background: '#e2e2e2'}} />}>
+        <Button variant='contained' sx={{ borderRadius: '20px' }}>Today</Button>
+        <Button variant='contained' sx={{ borderRadius: '20px' }}>Upcoming</Button>
+      </Stack>
+
+      <Box px={'25%'}>
+        <TaskManagerHeader />
+        <Stack py={'1.5rem'} spacing={'1.5rem'} mx={2}>
+          {tasks.map(task => <TaskCard task={task} key={task._id} />) }
+        </Stack>
+      </Box>
+    </>
+    )
 }
 
 export default TaskManager;
