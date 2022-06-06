@@ -13,19 +13,42 @@ const userMW = [auth, setUser];
 router.get('/', userMW, async(req, res) => {
   try {
     // Find all tasks associated with logged in user id
-    let tasks = await Task.find({ user: req.user.id });
+    const tasks = await Task.find({ user: req.user.id });
     
-    if (tasks === null) {
-      tasks = [];
-    }
+    const overdueTasks = [];
+    const todayTasks = [];
+    const upcomingTasks = [];
 
-    console.log('GETTING TASKS: ' + tasks);
-    return res.status(200).json(tasks); 
+    // If there are tasks
+    if (tasks) {
+      tasks.forEach(task => {
+        const taskType = getTaskType(task);
+        if (taskType === 'overdue') overdueTasks.push(task);
+        else if (taskType === 'today') todayTasks.push(task);
+        else if (taskType === 'upcoming') upcomingTasks.push(task);
+      })
+    }    
+    
+    // console.log('GETTING TASKS: ' + tasks);
+    return res.status(200).json({ 
+      overdueTasks: overdueTasks, 
+      todayTasks: todayTasks,
+      upcomingTasks: upcomingTasks }); 
   } catch (err) {
     console.log('GETTING TASKS FAILED: ' + err.message);
     res.status(500).json({ message: 'INTERNAL SERVER ERROR' });
   }
 })
+
+// // GET tasks of currently logged in user that are due today
+// router.get('/today', userMW, async(req.res) => {
+//   try {
+//     let tasks = await Task.find({ user: req.user.id });
+
+//     if (tasks )
+//   }
+// })
+
 
 // GET a specific task of currently logged in user
 router.get('/:task_id', userMW, async(req, res) => {
@@ -134,3 +157,32 @@ router.delete('/:task_id', userMW, async (req, res) => {
 })
 
 module.exports = router;
+
+function getTaskType(task) {
+  const now = new Date();
+  const nowD = now.getUTCDate();
+  const nowM = now.getUTCMonth();
+  const nowY = now.getUTCFullYear();
+
+  if (!task.dueDate) return 'upcoming';
+
+  const dueDate = new Date(task.dueDate);
+  const dueD = dueDate.getUTCDate();
+  const dueM = dueDate.getUTCMonth();
+  const dueY = dueDate.getUTCFullYear();
+
+  // Different year
+  if (dueY > nowY) return 'upcoming';
+  if (dueY < nowY) return 'overdue';
+
+  // Same year, different month
+  if (dueM > nowM) return 'upcoming';
+  if (dueM < nowM) return 'overdue';
+  
+  // Same year, month, different date
+  if (dueD > nowD) return 'upcoming';
+  if (dueD < nowD) return 'overdue';
+
+  // Same year, month, date
+  return 'today';
+}
