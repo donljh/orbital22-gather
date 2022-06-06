@@ -16,11 +16,18 @@ import IconButton from '@mui/material/IconButton';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import EditIcon from '@mui/icons-material/Edit'
 
-const sampleTask = { 
+const todaysTask = [{ 
   _id: "1",
-  title: "Sample Task", 
+  title: "Today's Task", 
   description: 'Sample Task Description', 
-  dueDate: "05 June"}
+  dueDate: "05 June"
+}]
+const upcomingTask= [{ 
+    _id: "1",
+    title: "Upcoming Task", 
+    description: 'Sample Task Description', 
+    dueDate: "05 June"
+}]
 
 const modalStyle = {
   position: 'absolute',
@@ -36,21 +43,25 @@ const modalStyle = {
   pb: 3,
 };
 
-const TaskManagerHeader = () => {
+const TaskManagerHeader = (props) => {
   const [open, setOpen] = useState(false);
+
+  const { selectedCategory } = props;
 
   const openCreateTaskForm = () => setOpen(true);
   const closeCreateTaskForm = () => setOpen(false);
 
-  const now = new Date().toDateString();
+  const now = new Date().toDateString();  
 
   return (
     <>
       <Stack py={2} direction='row' justifyContent='space-between' sx={{borderBottom: '1px #e2e2e2 solid'}}>
         <Stack spacing={2} direction='row'>
-          <Typography variant='h4' color='#e2e2e2' fontWeight='bold'>Today</Typography>
-          <Divider orientation='vertical' sx={{ background: '#e2e2e2'}} />
-          <Typography variant='h6' sx={{ color: '#676767' }}>{now}</Typography>
+          { selectedCategory === "today" 
+              ? (<><Typography variant='h4' color='#e2e2e2' fontWeight='bold'>Today</Typography>
+                <Divider orientation='vertical' sx={{ background: '#e2e2e2'}} />
+                <Typography variant='h6' sx={{ color: '#676767' }}>{now}</Typography></>)
+              : (<Typography variant='h4' color='#e2e2e2' fontWeight='bold'>Upcoming</Typography>)}
         </Stack>
         <Button color='success' variant='contained' size='small' onClick={openCreateTaskForm}  sx={{ borderRadius: '20px' }} startIcon={<AddOutlinedIcon />}> New Task </Button>       
       </Stack> 
@@ -87,11 +98,29 @@ const TaskCard = (props) => {
   )
 }
 
+const TaskPanel = (props) => {
+  const {category, selectedCategory, tasks} = props;
+
+  const displayValue = (category !== selectedCategory) ? 'none' : 'block' 
+
+  return(
+    <div style={{ display: displayValue }}>
+      <Stack py={'1.5rem'} spacing={'1.5rem'} mx={2}>
+        {tasks.map(task => <TaskCard task={task} key={task._id} />) }
+      </Stack>
+    </div>
+  )
+}
+
 const TaskManager = () => {
-  const [tasks, setTasks] = useState([sampleTask]);
+  // const [tasks, setTasks] = useState(sampleTasks);
+  const [selectedCategory, setSelectedCategory] = useState('today');
 
   const axiosRes = useAxiosRes();
 
+  const handleCategoryButtonClick = e => {
+    setSelectedCategory(e.target.value);
+  }
 
   // useEffect(() => {
   //   axiosRes.get('/task').then(response => {      
@@ -103,15 +132,14 @@ const TaskManager = () => {
   return (
     <>
       <Stack justifyContent='center' mt={3} spacing={2} direction='row' divider={<Divider orientation='vertical' flexItem sx={{ background: '#e2e2e2'}} />}>
-        <Button variant='contained' sx={{ borderRadius: '20px' }}>Today</Button>
-        <Button variant='contained' sx={{ borderRadius: '20px' }}>Upcoming</Button>
+        <Button variant='contained' sx={{ borderRadius: '20px' }} value="today" onClick={handleCategoryButtonClick}>Today</Button>
+        <Button variant='contained' sx={{ borderRadius: '20px' }} value="upcoming" onClick={handleCategoryButtonClick}>Upcoming</Button>
       </Stack>
 
       <Box px={'25%'}>
-        <TaskManagerHeader />
-        <Stack py={'1.5rem'} spacing={'1.5rem'} mx={2}>
-          {tasks.map(task => <TaskCard task={task} key={task._id} />) }
-        </Stack>
+        <TaskManagerHeader selectedCategory={selectedCategory} />
+        <TaskPanel category="today" selectedCategory={selectedCategory} tasks={todaysTask}></TaskPanel>
+        <TaskPanel category="upcoming" selectedCategory={selectedCategory} tasks={upcomingTask}></TaskPanel>
       </Box>
     </>
     )
