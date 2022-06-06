@@ -16,19 +16,6 @@ import IconButton from '@mui/material/IconButton';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import EditIcon from '@mui/icons-material/Edit'
 
-const todaysTask = [{ 
-  _id: "1",
-  title: "Today's Task", 
-  description: 'Sample Task Description', 
-  dueDate: "05 June"
-}]
-const upcomingTask= [{ 
-    _id: "1",
-    title: "Upcoming Task", 
-    description: 'Sample Task Description', 
-    dueDate: "05 June"
-}]
-
 const modalStyle = {
   position: 'absolute',
   top: '50%',
@@ -87,17 +74,26 @@ const TaskManagerHeader = (props) => {
 }
 
 const TaskCard = (props) => {
-  const {title, description, dueDate} = props.task;
+  const [completed, setCompleted] = useState(false);
+  const axiosRes = useAxiosRes();
 
+  const {_id, title, description, dueDate} = props.task;
   const displayDate = new Date(dueDate).toLocaleString('en-GB', { day: 'numeric', month:'short' })
 
+  const completeTask = e => {
+    axiosRes.delete(`/tasks/${_id}`)
+    .then(response => setCompleted(true))
+    .catch(err => console.log(err));
+  }
+
   return (
-    <Card sx={{ backgroundColor: '#282828' }}>
+    completed ? <></> :
+    <Card sx={{ backgroundColor: '#282828'}}>
       <CardContent sx={{ py: 1 }}>
         <Stack direction="row" justifyContent="space-between">
           <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis'}} gutterBottom variant="h6" color="#e2e2e2" component="span" fontWeight='semi-bold'>{title}</Typography>
           <Stack direction="row">
-            <Checkbox disableRipple color="primary"/>
+            <Checkbox disableRipple checked={completed} onChange={completeTask} color="primary"/>
             <IconButton disableRipple>
               <EditIcon />
             </IconButton>
@@ -114,8 +110,6 @@ const TaskPanel = (props) => {
   const {category, selectedCategory, tasks} = props;
 
   const displayValue = (category !== selectedCategory) ? 'none' : 'block' 
-
-  console.log(tasks);
 
   return(
     <div style={{ display: displayValue }}>
