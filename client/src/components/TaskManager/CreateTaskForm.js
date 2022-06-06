@@ -55,6 +55,7 @@ const CreateTaskForm = () => {
           multiline variant="outlined" />
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
+            inputFormat='dd/MM/yyyy'
             name="dueDate"
             label="Due Date"
             value={dueDate}

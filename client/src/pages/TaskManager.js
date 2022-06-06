@@ -57,11 +57,13 @@ const TaskManagerHeader = (props) => {
     <>
       <Stack py={2} direction='row' justifyContent='space-between' sx={{borderBottom: '1px #e2e2e2 solid'}}>
         <Stack spacing={2} direction='row'>
-          { selectedCategory === "today" 
-              ? (<><Typography variant='h4' color='#e2e2e2' fontWeight='bold'>Today</Typography>
-                <Divider orientation='vertical' sx={{ background: '#e2e2e2'}} />
-                <Typography variant='h6' sx={{ color: '#676767' }}>{now}</Typography></>)
-              : (<Typography variant='h4' color='#e2e2e2' fontWeight='bold'>Upcoming</Typography>)}
+          <Typography variant='h4' color='#e2e2e2' fontWeight='bold' textTransform="uppercase">{selectedCategory}</Typography>
+          {selectedCategory === 'today' ? (
+            <>
+              <Divider orientation='vertical' sx={{ background: '#e2e2e2'}} />
+              <Typography variant='h6' sx={{ color: '#676767' }}>{now}</Typography>
+            </>
+          ) : (<></>)}
         </Stack>
         <Button color='success' variant='contained' size='small' onClick={openCreateTaskForm}  sx={{ borderRadius: '20px' }} startIcon={<AddOutlinedIcon />}> New Task </Button>       
       </Stack> 
@@ -103,6 +105,8 @@ const TaskPanel = (props) => {
 
   const displayValue = (category !== selectedCategory) ? 'none' : 'block' 
 
+  console.log(tasks);
+
   return(
     <div style={{ display: displayValue }}>
       <Stack py={'1.5rem'} spacing={'1.5rem'} mx={2}>
@@ -113,7 +117,9 @@ const TaskPanel = (props) => {
 }
 
 const TaskManager = () => {
-  // const [tasks, setTasks] = useState(sampleTasks);
+  const [overdueTasks, setOverdueTasks] = useState([]);
+  const [todayTasks, setTodayTasks] = useState([]);
+  const [upcomingTasks, setUpcomingTasks] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('today');
 
   const axiosRes = useAxiosRes();
@@ -122,24 +128,27 @@ const TaskManager = () => {
     setSelectedCategory(e.target.value);
   }
 
-  // useEffect(() => {
-  //   axiosRes.get('/task').then(response => {      
-  //     setTasks(prevTasks => [...prevTasks, ...response.data]);
-  //     console.log(tasks)
-  //   })   
-  // }, [axiosRes])
+  useEffect(() => {
+    axiosRes.get('/task').then(response => {
+      setOverdueTasks(response.data.overdueTasks);
+      setTodayTasks(response.data.todayTasks);
+      setUpcomingTasks(response.data.upcomingTasks);  
+    })   
+  }, [axiosRes])
 
   return (
     <>
       <Stack justifyContent='center' mt={3} spacing={2} direction='row' divider={<Divider orientation='vertical' flexItem sx={{ background: '#e2e2e2'}} />}>
+      <Button variant='contained' sx={{ borderRadius: '20px' }} value="overdue" onClick={handleCategoryButtonClick}>Overdue</Button>
         <Button variant='contained' sx={{ borderRadius: '20px' }} value="today" onClick={handleCategoryButtonClick}>Today</Button>
         <Button variant='contained' sx={{ borderRadius: '20px' }} value="upcoming" onClick={handleCategoryButtonClick}>Upcoming</Button>
       </Stack>
 
       <Box px={'25%'}>
         <TaskManagerHeader selectedCategory={selectedCategory} />
-        <TaskPanel category="today" selectedCategory={selectedCategory} tasks={todaysTask}></TaskPanel>
-        <TaskPanel category="upcoming" selectedCategory={selectedCategory} tasks={upcomingTask}></TaskPanel>
+        <TaskPanel category="overdue" selectedCategory={selectedCategory} tasks={overdueTasks}></TaskPanel>
+        <TaskPanel category="today" selectedCategory={selectedCategory} tasks={todayTasks}></TaskPanel>
+        <TaskPanel category="upcoming" selectedCategory={selectedCategory} tasks={upcomingTasks}></TaskPanel>
       </Box>
     </>
     )
