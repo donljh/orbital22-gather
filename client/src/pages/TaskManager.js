@@ -51,7 +51,15 @@ const TaskManagerHeader = (props) => {
   const openCreateTaskForm = () => setOpen(true);
   const closeCreateTaskForm = () => setOpen(false);
 
-  const now = new Date().toDateString();  
+  const now = new Date()
+    .toLocaleDateString(
+      'en-GB', 
+      { weekday: 'long', 
+        day: 'numeric', 
+        month: 'short', 
+        year: 'numeric'
+      }
+    );  
 
   return (
     <>
@@ -81,6 +89,8 @@ const TaskManagerHeader = (props) => {
 const TaskCard = (props) => {
   const {title, description, dueDate} = props.task;
 
+  const displayDate = new Date(dueDate).toLocaleString('en-GB', { day: 'numeric', month:'short' })
+
   return (
     <Card sx={{ backgroundColor: '#282828' }}>
       <CardContent sx={{ py: 1 }}>
@@ -93,7 +103,7 @@ const TaskCard = (props) => {
             </IconButton>
           </Stack>
         </Stack>
-        <Typography gutterBottom variant="button" color="#e2e2e2" component="span">{`${dueDate}`}</Typography>
+        <Typography gutterBottom variant="button" color="#e2e2e2" component="span">{`${displayDate}`}</Typography>
         <Typography variant="body2" color="#676767" component="p" sx={{ textOverflow: 'ellipsis' }}>{description}</Typography>
       </CardContent>
     </Card>
