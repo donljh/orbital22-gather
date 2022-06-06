@@ -40,16 +40,6 @@ router.get('/', userMW, async(req, res) => {
   }
 })
 
-// // GET tasks of currently logged in user that are due today
-// router.get('/today', userMW, async(req.res) => {
-//   try {
-//     let tasks = await Task.find({ user: req.user.id });
-
-//     if (tasks )
-//   }
-// })
-
-
 // GET a specific task of currently logged in user
 router.get('/:task_id', userMW, async(req, res) => {
   try {

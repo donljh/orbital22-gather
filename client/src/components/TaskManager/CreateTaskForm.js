@@ -10,7 +10,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 import useAxiosRes from '../../hooks/useAxiosRes';
 
-const CreateTaskForm = () => {
+const CreateTaskForm = (props) => {
   const initialTaskData = {
     title: '',
     description: '',
@@ -32,7 +32,7 @@ const CreateTaskForm = () => {
     axiosRes.post('/task', task)
     .then(response => {
       setTaskData(initialTaskData);
-      console.log(response.data);
+      props.setIsTaskListModified(true);
     })
     .catch(err => console.log(err.data));
   }
