@@ -47,7 +47,9 @@ const TaskManager = () => {
         {
           ['overdue', 'today', 'upcoming'].map(category => 
           <Button 
-            sx={{ borderRadius: '20px', background: '#282828' }}
+            key={category}
+            sx={{ borderRadius: '20px', background: (category === selectedCategory) ? '' : '#282828' }}
+            color="warning"
             variant='contained'
             value={category}
             onClick={handleCategoryButtonClick}>
@@ -61,6 +63,7 @@ const TaskManager = () => {
          ['today', todayTasks],
          ['upcoming', upcomingTasks]].map(category => 
           <TaskPanel 
+            key={category}
             category={category[0]} 
             tasks={category[1]}
             selectedCategory={selectedCategory}

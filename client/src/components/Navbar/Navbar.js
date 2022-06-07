@@ -7,7 +7,7 @@ import useLogout from '../../hooks/useLogout';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
 import Toolbar from '@mui/material/Toolbar';
-import { Button, ButtonGroup } from '@mui/material';
+import { Button, Stack} from '@mui/material';
 
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
@@ -31,21 +31,23 @@ const Navbar = () => {
     <AppBar position="sticky">
       <Toolbar sx={{ 
           justifyContent: 'space-between', 
-          backgroundColor: 'primary.dark' }}>
+          backgroundColor: '#282828' }}>
         <Avatar alt="Gather Logo" src={Logo} />
-        <ButtonGroup variant="outlined" color="primary" disableElevation>
+        <Stack direction="row">
           {links.map(link=> (
             <Button 
+              color="warning"
+              variant="contained"
               key={link[0]} 
               startIcon={link[1]}
               value={link[0].replace(" ","")} 
               onClick={handleLinkClick}
-              sx={{ color: 'white', mx: 2 }}
+              sx={{ background:'#282828', mx: 2 }}
               size="medium"
             > 
             {link[0] || 'dashboard' } 
             </Button>))}
-        </ButtonGroup>
+          </Stack>
         <Button onClick={logout} sx={{ color: 'white' }}>Logout</Button>
       </Toolbar>
     </AppBar>
