@@ -14,7 +14,6 @@ const auth = (req, res, next) => {
   // Get token from header
   const token = authorization.split(' ')[1];
 
-
   // Verify incoming token and set requesting user id to be decoded user
   try {
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {

@@ -1,6 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import Logo from '../../assets/gather-icon.png';
+
+import useLogout from '../../hooks/useLogout';
+
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
 import Toolbar from '@mui/material/Toolbar';
@@ -18,12 +21,17 @@ const links =[['', <DashboardOutlinedIcon />],
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const logout = useLogout();
+
   const handleLinkClick= e => {
     navigate(`/${e.target.value}`);
   }
+
   return(
-    <AppBar position="fixed">
-      <Toolbar sx={{ justifyContent: 'space-between' }}>
+    <AppBar position="sticky">
+      <Toolbar sx={{ 
+          justifyContent: 'space-between', 
+          backgroundColor: 'primary.dark' }}>
         <Avatar alt="Gather Logo" src={Logo} />
         <ButtonGroup variant="outlined" color="primary" disableElevation>
           {links.map(link=> (
@@ -38,7 +46,7 @@ const Navbar = () => {
             {link[0] || 'dashboard' } 
             </Button>))}
         </ButtonGroup>
-        <Avatar alt="Profile" src={Logo} />
+        <Button onClick={logout} sx={{ color: 'white' }}>Logout</Button>
       </Toolbar>
     </AppBar>
   )

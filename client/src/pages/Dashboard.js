@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import useUser from "../hooks/useUser";
 import useAxiosRes from '../hooks/useAxiosRes';
 
 /**
@@ -8,7 +7,6 @@ import useAxiosRes from '../hooks/useAxiosRes';
  * is successfully logged in/registered.
  */
 function Dashboard() {
-  const { user } = useUser();
   const axiosRes = useAxiosRes();
   const [profile, setProfile] = useState({});
 
@@ -16,7 +14,7 @@ function Dashboard() {
     axiosRes.get('/profile').then(response => {
       setProfile(response.data)
     })   
-  }, [user, axiosRes])
+  }, [axiosRes])
   
   return (
     <div className="dashboard">

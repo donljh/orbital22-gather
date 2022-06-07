@@ -2,7 +2,6 @@ import { Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
 import useRefreshToken from "../hooks/useRefreshToken";
 import useUser from "../hooks/useUser";
-import useLogout from '../hooks/useLogout';
 
 /**
  * PersistentLogin is a component that wraps around protected routes.
@@ -15,7 +14,6 @@ const PersistentLogin = () => {
 
   const refresh = useRefreshToken();
   const { user } = useUser();
-  const logout = useLogout();
 
   useEffect(() => {
     const verifyRefreshToken = async () => {
@@ -37,7 +35,7 @@ const PersistentLogin = () => {
     <>
       {loading 
           ? <p>Loading</p>
-          : <><Outlet /><button onClick={logout}>Logout</button></>
+          : <Outlet />
       }
     </>
   )
