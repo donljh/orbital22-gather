@@ -30,6 +30,7 @@ router.get('/', userMW, async (req, res) => {
 
 // PATCH name of currently logged in user
 router.patch('/change_name', userMW, async (req, res) => {
+  console.log(req.body);
   try {
     // Check if there is name input
     if (req.body.name === null) {
