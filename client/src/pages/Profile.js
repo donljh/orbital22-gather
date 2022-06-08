@@ -7,7 +7,7 @@ const modalStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: 600,
   bgcolor: '#282828',
   boxShadow: 24,
   textAlign: 'center',
@@ -17,31 +17,45 @@ const modalStyle = {
   pb: 3,
 };
 
+const profileDisplayStyle = {
+  width: 600,
+  bgcolor: '#282828',
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  textAlign: 'center',
+  borderRadius: '20px',
+  py: 3
+}
+
+const ProfileFieldDisplay = (props) => {
+  return <TextField sx={{ width: '60%' }} variant="filled" color="warning" label={props.label} value={props.value} focused inputProps={{ style: {color: 'white'}, disabled: 'true'}} />
+}
+
+const EditFieldButton = (props) => {
+  return <IconButton edge="end" sx={{color: 'white'}} disableRipple><EditIcon /></IconButton>
+}
+
 const Profile = () => {
   return (    
-    <Box sx={modalStyle} justifyContent>
-      <Stack spacing={8}>
+    <Box sx={profileDisplayStyle}>
+      <Stack spacing={8} mb={4}>
         <Typography mt={2} variant="h4" fontWeight="bold">Your Profile</Typography>
         <Box>
-          <TextField variant="filled" color="warning" label="YOUR NAME" value={"samplename"} focused inputProps={{ style: {color: 'white'}, disabled: 'true'}}></TextField>
-          <IconButton edge="end" sx={{color: 'white'}} disableRipple>
-            <EditIcon />
-          </IconButton>
+          <ProfileFieldDisplay label="YOUR NAME" value={"name"} />
+          <EditFieldButton />
         </Box>
         <Box>
-        <TextField variant="filled" color="warning" label="YOUR EMAIL ADDRESS" value={"sampleemail@email.com"} focused inputProps={{ style: {color: 'white'}, disabled: 'true'}}></TextField>
-          <IconButton edge="end" sx={{color: 'white'}} disableRipple>
-            <EditIcon />
-          </IconButton>
+          <ProfileFieldDisplay label="YOUR EMAIL ADDRESS" value={"email123123123123123123123123123131231231"} />
+          <EditFieldButton />
         </Box>
         <Box>
-        <TextField variant="filled" color="warning" label="YOUR PASSWORD" value={'*********'} focused inputProps={{ style: {color: 'white'}, disabled: 'true'}}></TextField>
-          <IconButton edge="end" sx={{color: 'white'}} disableRipple>
-            <EditIcon />
-          </IconButton>
+          <ProfileFieldDisplay label="YOUR PASSWORD" value={"********"} />
+          <EditFieldButton />
         </Box>
-        <Button color="error">Deregister</Button>
       </Stack>
+      <Button variant="contained" size="medium" color="error">Deregister</Button>
     </Box>
   )
 }
