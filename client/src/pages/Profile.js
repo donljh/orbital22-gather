@@ -1,10 +1,13 @@
 import { Box, Stack, Typography, IconButton, Button, Modal } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect} from 'react'
+import { useNavigate } from 'react-router-dom';
 import useAxiosRes from '../hooks/useAxiosRes';
 
 import ProfileFieldDisplay from '../components/profile/ProfileFieldDisplay';
 import ProfileFieldChangeModal from '../components/profile/ProfileFieldChangeModal'
+import { axiosAuth } from '../api/axios';
+import useUser from '../hooks/useUser';
 
 const profileDisplayStyle = {
   width: 600,
@@ -48,6 +51,20 @@ const Profile = () => {
   const closePasswordChangeModal = () => setPasswordChangeModalOpen(false);
 
   const axiosRes = useAxiosRes();
+  const navigate = useNavigate();
+  const { user } = useUser();
+
+  const deregister = async () => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.accessToken}`,
+      }
+    }
+    axiosAuth.post('/deregister', [], config)
+    .then(response => navigate('/login'))
+    .catch(err => console.log(err))
+  }
 
   useEffect(() => {
     setIsUpdated(false);
@@ -85,7 +102,7 @@ const Profile = () => {
         </Box>
 
       </Stack>
-      <Button variant="contained" color="error">Deregister</Button>
+      <Button variant="contained" color="error" onClick={deregister}>Deregister</Button>
     </Box>
   )
 }
