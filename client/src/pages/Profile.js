@@ -1,13 +1,13 @@
-import { Box, Stack, Typography, IconButton, Button, Modal } from '@mui/material';
+import { Box, Stack, Typography, IconButton, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit'
 import React, { useState, useEffect} from 'react'
-import { useNavigate } from 'react-router-dom';
 import useAxiosRes from '../hooks/useAxiosRes';
 
 import ProfileFieldDisplay from '../components/profile/ProfileFieldDisplay';
 import ProfileFieldChangeModal from '../components/profile/ProfileFieldChangeModal'
-import { axiosAuth } from '../api/axios';
-import useUser from '../hooks/useUser';
+import DeregisterModal from '../components/profile/DeregisterModal';
+
+
 
 const profileDisplayStyle = {
   width: 600,
@@ -37,6 +37,7 @@ const Profile = () => {
   const [nameChangeModalOpen, setNameChangeModalOpen] = useState(false);
   const [emailChangeModalOpen, setEmailChangeModalOpen] = useState(false);
   const [passwordChangeModalOpen, setPasswordChangeModalOpen] = useState(false);
+  const [deregisterModalOpen, setDeregisterModalOpen] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [isUpdated, setIsUpdated] = useState(false);
@@ -50,21 +51,10 @@ const Profile = () => {
   const openPasswordChangeModal = () => setPasswordChangeModalOpen(true);
   const closePasswordChangeModal = () => setPasswordChangeModalOpen(false);
 
-  const axiosRes = useAxiosRes();
-  const navigate = useNavigate();
-  const { user } = useUser();
+  const openDeregisterModal = () => setDeregisterModalOpen(true);
+  const closeDeregisterModal = () => setDeregisterModalOpen(false);
 
-  const deregister = async () => {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${user.accessToken}`,
-      }
-    }
-    axiosAuth.post('/deregister', [], config)
-    .then(response => navigate('/login'))
-    .catch(err => console.log(err))
-  }
+  const axiosRes = useAxiosRes();
 
   useEffect(() => {
     setIsUpdated(false);
@@ -102,7 +92,9 @@ const Profile = () => {
         </Box>
 
       </Stack>
-      <Button variant="contained" color="error" onClick={deregister}>Deregister</Button>
+
+      <Button variant="contained" color="error" onClick={openDeregisterModal}>Deregister</Button>
+      <DeregisterModal open={deregisterModalOpen} onClose={closeDeregisterModal} />
     </Box>
   )
 }

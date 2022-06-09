@@ -17,7 +17,7 @@ router.get('/', userMW, async (req, res) => {
     })
 
     if (profile === null) {
-      return res.status(404).message({ message: 'Profile cannot be found.'})
+      return res.status(404).json({ message: 'Profile cannot be found.'})
     }
 
     console.log('GETTING PROFILE: ' + profile);
