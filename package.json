@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/donljh/orbital22-gather#readme",
   "dependencies": {
+    "@fullcalendar/timegrid": "^5.11.0",
     "concurrently": "^7.2.1",
     "frontend": "file:client",
     "orbital22-gather": "file:server"
