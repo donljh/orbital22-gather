@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const invitationSchema = new mongoose.Schema({
   group: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Group',
     required: true
   },
   invited_by: {

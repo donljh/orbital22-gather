@@ -52,9 +52,12 @@ app.post('/register', async (req, res) => {
 
     // Create profile in the database
     const newProfile = await Profile.create({
-      user: newUser,
+      user: newUser.id,
       name
     })
+
+    newUser.profile = newProfile;
+    await newUser.save();
 
     const accessToken = generateAccessToken(newUser.id);
     const refreshToken = generateRefreshToken(newUser.id);

@@ -25,6 +25,14 @@ const groupSchema = new mongoose.Schema({
     ],
     validate: [array => array.length > 0, 'No members']
   },
+  invitations: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Invitation',
+      }
+    ]
+  },
   dateCreated: {
     type: Date,
     required: true,
