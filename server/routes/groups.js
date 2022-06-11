@@ -54,8 +54,14 @@ router.delete('/:group_id', userMW, async(req, res) => {
   try {
     // Find group based on given group id
     const group = await Group.findById(req.params.group_id)
-      .populate('members', '_id')
-      .populate('admins', '_id');
+      .populate({ 
+        path: 'members', 
+        select: '_id', 
+        populate: { path: 'profile', select: 'name' }})
+      .populate({ 
+        path: 'admins', 
+        select: '_id', 
+        populate: { path: 'profile', select: 'name' }});
 
     if (group === null) {
       return res.status(404).json({ message: 'Group cannot be found' });
@@ -82,8 +88,14 @@ router.get('/:group_id', userMW, async(req, res) => {
   try {
     // Find group based on given group id
     const group = await Group.findById(req.params.group_id)
-      .populate('members', '_id')
-      .populate('admins', '_id');
+      .populate({ 
+        path: 'members', 
+        select: '_id', 
+        populate: { path: 'profile', select: 'name' }})
+      .populate({ 
+        path: 'admins', 
+        select: '_id', 
+        populate: { path: 'profile', select: 'name' }});
 
     if (group === null) {
       return res.status(404).json({ message: 'Group cannot be found' });
@@ -111,8 +123,14 @@ router.patch('/:group_id/join', userMW, async(req, res) => {
   try {
     // Find group based on given group id
     const group = await Group.findById(req.params.group_id)
-      .populate('members', '_id')
-      .populate('admins', '_id');
+      .populate({ 
+        path: 'members', 
+        select: '_id', 
+        populate: { path: 'profile', select: 'name' }})
+      .populate({ 
+        path: 'admins', 
+        select: '_id', 
+        populate: { path: 'profile', select: 'name' }});
 
     if (group === null) {
       return res.status(404).json({ message: 'Group cannot be found' });
@@ -143,8 +161,14 @@ router.patch('/:group_id/leave', userMW, async(req, res) => {
   try {
      // Find group based on given group id
     const group = await Group.findById(req.params.group_id)
-    .populate('members', '_id')
-    .populate('admins', '_id');
+      .populate({ 
+        path: 'members', 
+        select: '_id', 
+        populate: { path: 'profile', select: 'name' }})
+      .populate({ 
+        path: 'admins', 
+        select: '_id', 
+        populate: { path: 'profile', select: 'name' }});
 
     if (group === null) {
       return res.status(404).json({ message: 'Group cannot be found' });
