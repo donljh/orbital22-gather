@@ -17,6 +17,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import GroupSelectionDrawer from '../components/groups/GroupSelectionDrawer';
 
 <Stack direction="column" spacing={2} mt={2}>
 {
@@ -27,18 +28,7 @@ import MailIcon from '@mui/icons-material/Mail';
 const Groups = () => {
   return (<>
     <Box sx={{display: 'flex'}}>
-      <Drawer variant="permanent" sx={{width: '250px', [`& .MuiDrawer-paper`]: { background:'none', width: '250px', boxSizing: 'border-box', borderRight: '1px lightgrey solid' }}}>
-      <Toolbar />
-          <Box sx={{ overflow: 'hidden', p: 3 }}>
-            <Typography variant="h4" fontWeight='semi-bold' color="#ffffff" textAlign="center" gutterBottom>Your Groups</Typography>
-            <Divider color="#e2e2e2"/>
-            <Stack direction="column" spacing={2} mt={2}>
-              {
-                [1,2,3,4].map(n => <Button variant="contained" color="warning" sx={{ borderRadius:'20px', background: (n === 1) ? '' : '#282828'}}>Group {n}</Button>)
-              }
-            </Stack>
-          </Box>
-      </Drawer>
+      <GroupSelectionDrawer />
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Stack 
           spacing={2}  
