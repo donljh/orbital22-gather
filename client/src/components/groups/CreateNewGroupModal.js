@@ -1,8 +1,4 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom';
-import { axiosAuth } from '../../api/axios';
-import useUser from '../../hooks/useUser';
-import useLogout from '../../hooks/useLogout'
+import React, { useState, useEffect } from 'react'
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -11,6 +7,8 @@ import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import { Stack } from '@mui/material';
 import { Container } from '@mui/system';
+
+import useAxiosRes from '../../hooks/useAxiosRes';
 
 
 const modalStyle = {
@@ -31,9 +29,23 @@ const modalStyle = {
 const CreateNewGroupModal = (props) => {
   const { open, onClose } = props;
 
+  const [groupName, setGroupName] = useState('');
+
   const onChange = e => {
-    console.log(e.target.value)
+    setGroupName(e.target.value)
   }
+
+  const axiosRes = useAxiosRes();
+
+  const createNewGroup = async () => {
+    axiosRes.post('/group', { groupName })
+    .then(response => {
+      setGroupName('');
+      onClose();
+    })
+    .catch(err => console.log(err.data));
+  }
+
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={modalStyle}>
@@ -42,6 +54,7 @@ const CreateNewGroupModal = (props) => {
         <TextField 
           color="warning"
           name="groupName"
+          value={groupName}
           label="Group Name" 
           variant="outlined" 
           onChange={onChange}
@@ -53,7 +66,11 @@ const CreateNewGroupModal = (props) => {
           }}
           required/>
       </Stack>
-      <Button color="success" variant="contained">Create Group</Button>
+      <Button 
+        disabled={!groupName} color="success" 
+        variant="contained" onClick={createNewGroup}>
+        Create Group
+      </Button>
       </Box>   
     </Modal>
   )

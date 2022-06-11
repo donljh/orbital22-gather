@@ -23,10 +23,7 @@ import CreateNewGroupModal from './CreateNewGroupModal';
 const GroupSelectionDrawer = () => {
   const [open, setOpen] = useState(false);
 
-  const openCreateNewGroupModal = () => {
-    console.log('OPEN')
-    setOpen(true)
-  }
+  const openCreateNewGroupModal = () => setOpen(true);
   const closeCreateNewGroupModal = () => setOpen(false);
 
   return (<>
