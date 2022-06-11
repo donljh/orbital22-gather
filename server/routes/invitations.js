@@ -9,3 +9,5 @@ const Group = require('../models/Group');
 // Middleware to authenticate and set request user to be same as user in DB
 // req.user --> user (in DB)
 const userMW = [auth, setUser]
+
+module.exports = router
