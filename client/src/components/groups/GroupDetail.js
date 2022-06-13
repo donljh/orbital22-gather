@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -6,8 +6,12 @@ import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
+import CreateNewInvitationModal from './CreateNewInvitationModal'
+
 const GroupDetail = (props) => {
   const { name, members, admins, isUserAdmin } = props;
+  
+  const [open, setOpen] = useState(false);
 
   return (
     <Stack
@@ -48,7 +52,9 @@ const GroupDetail = (props) => {
       <CardContent>
         <Stack direction="row" spacing={3} mb={1}>
           <Typography variant="h6" color="lightgrey" gutterBottom>Members</Typography>
-          <Button size="small" color="success" variant="contained" sx={{ borderRadius: '20px' }}>Invite</Button>
+          <Button size="small" color="success" 
+          variant="contained" sx={{ borderRadius: '20px' }}
+          onClick={() => setOpen(true)}>Invite</Button>
         </Stack>
         <Grid container spacing={2} width={'100%'}>
           {members.map(member => (
@@ -64,6 +70,8 @@ const GroupDetail = (props) => {
         </Grid>        
       </CardContent>
     </Card>
+
+    <CreateNewInvitationModal open={open} onClose={() => setOpen(false)}/>
   </Stack>
   )
 }
