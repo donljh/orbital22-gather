@@ -18,10 +18,15 @@ router.get('/', userMW, async (req, res) => {
     const invitations = await Invitation.find({ 
       invitee: req.user
     })
+      .populate('group', 'name')
+      .populate({
+        path: 'invited_by',
+        select: 'email',
+        populate: { path: 'profile', select: 'name' }});
 
     // Return found invitiations
     console.log('GETTING INVITATIONS: ' + invitations);
-    res.status(200).json(invitatons);
+    res.status(200).json(invitations);
   } catch (err) {
     console.log('GETTING INVITATIONS FAILED: ' + err.message);
     res.status(500).json({ message: 'INTERNAL SERVER ERROR' });
