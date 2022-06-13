@@ -26,17 +26,31 @@ const modalStyle = {
 };
 
 const CreateNewInvitationModal = (props) => {
-  const { open, onClose } = props;
+  const { open, onClose, groupID } = props;
 
-  const [inviteeEmail, setInviteeEmail] = useState('');
+  const initialInvitationData = {
+    groupID,
+    inviteeEmail: '',
+    message: '',
+  }
 
+  const [invitationData, setInvitationData] = useState(initialInvitationData);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const { inviteeEmail, message } = invitationData;
+  
   const onChange = e => {
-    setInviteeEmail(e.target.value)
+    setInvitationData({...invitationData, [e.target.name]: e.target.value})
   }
 
   const axiosRes = useAxiosRes();
 
   const createNewInvitation = async () => {
+    axiosRes.post('/invitation', invitationData)
+      .then(response => {
+        setInvitationData(initialInvitationData)
+        onClose()
+      }).catch(err => setErrorMessage(err.response.data.message))
   }
 
   return (
@@ -44,9 +58,10 @@ const CreateNewInvitationModal = (props) => {
       <Box sx={modalStyle}>
       <Stack spacing={4} mb={4} >
         <Typography variant="h6" color="white" textAlign='center'>Inviting A User</Typography>
+        {errorMessage ? <Typography variant="subtitle" color="red">{errorMessage}</Typography> : <></>}
         <TextField 
           color="warning"
-          name="inviteeemail"
+          name="inviteeEmail"
           value={inviteeEmail}
           label="Invitee Email" 
           variant="outlined" 
@@ -58,6 +73,19 @@ const CreateNewInvitationModal = (props) => {
             }
           }}
           required/>
+          <TextField 
+          color="warning"
+          name="message"
+          value={message}
+          label="Invite Message" 
+          variant="outlined" 
+          onChange={onChange}
+          focused
+          inputProps={{ 
+            style: { 
+              color: 'white' 
+            }
+          }}/>
       </Stack>
       <Button 
         disabled={!inviteeEmail} color="success" 

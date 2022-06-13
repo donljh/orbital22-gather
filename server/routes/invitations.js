@@ -4,6 +4,7 @@ const { auth } = require('../middleware/auth');
 const setUser = require('../middleware/setUser');
 
 const User = require('../models/User');
+const Group = require('../models/Group');
 const Invitation = require('../models/Invitation');
 
 // Middleware to authenticate and set request user to be same as user in DB
@@ -64,10 +65,10 @@ router.get('/:group_id', userMW, async (req, res) => {
 router.post('/', userMW, async (req, res) => {
   try {
     // Get invitation parameters from req body
-    const { groupId, inviteeEmail, message } = req.body;
+    const { groupID, inviteeEmail, message } = req.body;
 
     // Check for validity of given group's id and invitee email
-    const invitee = User.findOne(
+    const invitee = await User.findOne(
       { email: inviteeEmail }
     );
 
@@ -75,13 +76,26 @@ router.post('/', userMW, async (req, res) => {
       return res.status(404).json({ message: 'Cannot find requested user' })
     }
     
-    const group = Group.findById(groupId)
+    const group = await Group.findById(groupID).populate('members')
 
     if (group === null) {
       return res.status(404).json({ message: 'Cannot find requested group' })
     }
 
-    const invitation = await Invitations.create({
+    if (group.members.map(member => member.id).includes(invitee.id)) {
+      return res.status(400).json({ message: 'User is already in this group' })
+    }
+
+    const existingInvitation = await Invitation.findOne({
+      group: groupID,
+      invitee
+    })
+
+    if (existingInvitation) {
+      return res.status(400).json({ message: 'An invitation has already been sent to this user' })
+    }
+
+    const invitation = await Invitation.create({
       group,
       invited_by: req.user,
       invitee,

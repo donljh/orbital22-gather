@@ -9,9 +9,13 @@ import Typography from '@mui/material/Typography'
 import CreateNewInvitationModal from './CreateNewInvitationModal'
 
 const GroupDetail = (props) => {
-  const { name, members, admins, isUserAdmin } = props;
-  
+  const { name, members, admins } = props.group;
+  const { isUserAdmin, groupID } = props;
+
   const [open, setOpen] = useState(false);
+
+  const openCreateNewInvitationModal = () => setOpen(true);
+  const closeCreateNewInvitationModal = () => setOpen(false);
 
   return (
     <Stack
@@ -54,7 +58,7 @@ const GroupDetail = (props) => {
           <Typography variant="h6" color="lightgrey" gutterBottom>Members</Typography>
           <Button size="small" color="success" 
           variant="contained" sx={{ borderRadius: '20px' }}
-          onClick={() => setOpen(true)}>Invite</Button>
+          onClick={openCreateNewInvitationModal}>Invite</Button>
         </Stack>
         <Grid container spacing={2} width={'100%'}>
           {members.map(member => (
@@ -71,7 +75,7 @@ const GroupDetail = (props) => {
       </CardContent>
     </Card>
 
-    <CreateNewInvitationModal open={open} onClose={() => setOpen(false)}/>
+    <CreateNewInvitationModal groupID={groupID} open={open} onClose={closeCreateNewInvitationModal}/>
   </Stack>
   )
 }

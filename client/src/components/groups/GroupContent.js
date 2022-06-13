@@ -66,7 +66,7 @@ const GroupContent = (props) => {
         }
       </Stack>
       <Divider color={'#e2e2e2'}/>
-      <GroupDetail name={group.name} admins={group.admins} members={group.members} isUserAdmin={isUserAdmin} />
+      <GroupDetail groupID={groupID} group={group} isUserAdmin={isUserAdmin} />
     </>)
   )
 }
