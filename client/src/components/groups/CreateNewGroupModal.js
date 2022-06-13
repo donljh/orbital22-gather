@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField'
 import Modal from '@mui/material/Modal';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography';
-import { Stack } from '@mui/material';
-import { Container } from '@mui/system';
 
 import useAxiosRes from '../../hooks/useAxiosRes';
 
@@ -27,7 +26,7 @@ const modalStyle = {
 };
 
 const CreateNewGroupModal = (props) => {
-  const { open, onClose } = props;
+  const { open, onClose, setIsGroupListModified } = props;
 
   const [groupName, setGroupName] = useState('');
 
@@ -41,6 +40,7 @@ const CreateNewGroupModal = (props) => {
     axiosRes.post('/group', { groupName })
     .then(response => {
       setGroupName('');
+      setIsGroupListModified(true);
       onClose();
     })
     .catch(err => console.log(err.data));

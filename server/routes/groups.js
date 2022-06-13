@@ -87,15 +87,15 @@ router.delete('/:group_id', userMW, async(req, res) => {
 router.get('/:group_id', userMW, async(req, res) => {
   try {
     // Find group based on given group id
-    const group = await Group.findById(req.params.group_id)
+    let group = await Group.findById(req.params.group_id)
       .populate({ 
         path: 'members', 
-        select: '_id', 
-        populate: { path: 'profile', select: 'name' }})
+        select: '_id, email', 
+        populate: { path: 'profile', select: 'name -_id' }})
       .populate({ 
         path: 'admins', 
-        select: '_id', 
-        populate: { path: 'profile', select: 'name' }});
+        select: '_id, email', 
+        populate: { path: 'profile', select: 'name -_id' }});
 
     if (group === null) {
       return res.status(404).json({ message: 'Group cannot be found' });
@@ -110,8 +110,15 @@ router.get('/:group_id', userMW, async(req, res) => {
       })
     }    
 
+    const adminIDs = group.admins.map(admin => admin.id);
+
+    // Check if user is an admin of the group
+    if (adminIDs.includes(req.user.id)) {
+      return res.status(200).json({ group, isUserAdmin: true })
+    }    
+
     console.log('GETTING GROUP: ' + group);
-    return res.status(200).json(group);
+    return res.status(200).json({ group, isUserAdmin: false });
   } catch (err) {
     console.log('GETTING GROUP FAILED: ' + err.message);
     res.status(500).json({ message: 'INTERNAL SERVER ERROR' });
