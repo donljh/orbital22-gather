@@ -14,7 +14,7 @@ import Protected from './pages/Protected';
 import Calendar from './pages/Calendar';
 import TaskManager from './pages/TaskManager';
 import Groups from './pages/Groups'
-
+import Profile from './pages/Profile'
 
 export const UserContext = React.createContext([]);
 
@@ -36,6 +36,7 @@ function App() {
             <Route path='calendar' element={<ProtectedRoute> <Calendar /> </ProtectedRoute>} />
             <Route path='taskmanager' element={<ProtectedRoute> <TaskManager /> </ProtectedRoute>} />
             <Route path='groups' element={<ProtectedRoute> <Groups /> </ProtectedRoute>} />
+            <Route path='profile' element={<ProtectedRoute> <Profile /> </ProtectedRoute>} />
             <Route path='protected' element={<ProtectedRoute> <Protected /> </ProtectedRoute>} />
           </Route>
         </Route>

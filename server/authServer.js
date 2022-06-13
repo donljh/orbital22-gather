@@ -161,9 +161,9 @@ app.post('/refresh_token', async (req, res) => {
 })
 
 // Deregister a user and delete profile
-app.delete('/deregister', auth, async (req, res) => {
+app.post('/deregister', auth, async (req, res) => {
   try {
-    await User.deleteOne({ id: req.user.id });
+    await User.deleteOne({ _id: req.user.id });
     await Profile.deleteOne({ user: req.user.id });
     res.status(200).json({ message: 'User has been deleted'});
   } catch (err) {
