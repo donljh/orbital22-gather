@@ -65,7 +65,6 @@ const GroupInvitations = () => {
   const axiosRes = useAxiosRes();
 
   useEffect(() => {
-    console.log(invitations)
     axiosRes.get('/invitation')
       .then(response => setInvitations(response.data))
       .catch(console.log)

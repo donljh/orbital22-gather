@@ -7,15 +7,38 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 import CreateNewInvitationModal from './CreateNewInvitationModal'
+import { CardActions } from '@mui/material'
+import useAxiosRes from '../../hooks/useAxiosRes'
 
 const GroupDetail = (props) => {
   const { name, members, admins } = props.group;
   const { isUserAdmin, groupID } = props;
+  const { setIsGroupListModified, setSelectedGroupID } = props;
 
   const [open, setOpen] = useState(false);
 
   const openCreateNewInvitationModal = () => setOpen(true);
   const closeCreateNewInvitationModal = () => setOpen(false);
+
+  const axiosRes = useAxiosRes();
+
+  const leaveGroup = () => {
+    axiosRes.patch(`/group/${groupID}/leave`)
+      .then(() => {
+        setIsGroupListModified(true)
+        setSelectedGroupID(null)
+      })
+      .catch(console.log)
+  }
+
+  const deleteGroup = () => {
+    axiosRes.delete(`/group/${groupID}/`)
+      .then(() => {
+        setIsGroupListModified(true)
+        setSelectedGroupID(null)
+      })
+      .catch(console.log)
+  }
 
   return (
     <Stack
@@ -32,6 +55,10 @@ const GroupDetail = (props) => {
           {name}
         </Typography>
       </CardContent>
+      <CardActions>
+        <Button onClick={leaveGroup}>Leave Group</Button>
+        {isUserAdmin && <Button onClick={deleteGroup}>Delete Group</Button>}
+      </CardActions>
     </Card>
     <Card sx={{ background: "#282828" }}>
       <CardContent>

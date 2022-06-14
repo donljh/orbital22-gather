@@ -23,24 +23,23 @@ import GroupSelectionDrawer from '../components/groups/GroupSelectionDrawer';
 import GroupContent from '../components/groups/GroupContent';
 import GroupInvitations from '../components/groups/GroupInvitations'
 
-<Stack direction="column" spacing={2} mt={2}>
-{
-  [1,2,3,4].map(n => <Button variant="contained" color="warning" sx={{ borderRadius:'20px', background: (n === 1) ? '' : '#282828'}}>Group {n}</Button>)
-}
-</Stack>
-
 const Groups = () => {
   const [selectedGroupID, setSelectedGroupID] = useState(null);
+
+  const [isGroupListModified, setIsGroupListModified] = useState(false);
 
   return (<>
     <Box sx={{display: 'flex'}}>
       <GroupSelectionDrawer 
         selectedGroupID={selectedGroupID} 
-        setSelectedGroupID={setSelectedGroupID}/>
+        setSelectedGroupID={setSelectedGroupID}
+        isGroupListModified={isGroupListModified}
+        setIsGroupListModified={setIsGroupListModified}
+        />
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         { selectedGroupID 
-            ? <GroupContent groupID={selectedGroupID} />
-            : <GroupInvitations />}
+            ? <GroupContent groupID={selectedGroupID} setSelectedGroupID={setSelectedGroupID} isGroupListModified={isGroupListModified} setIsGroupListModified={setIsGroupListModified} />
+            : <GroupInvitations isGroupListModified={isGroupListModified} setIsGroupListModified={setIsGroupListModified} />}
       </Box>
     </Box>
     </>

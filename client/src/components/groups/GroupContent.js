@@ -30,6 +30,8 @@ import GroupDetail from './GroupDetail';
 const GroupContent = (props) => {
   const [group, setGroup] = useState(null);
   const [isUserAdmin, setIsUserAdmin] = useState(false);
+  const { isGroupListModified, setIsGroupListModified } = props;
+  const { setSelectedGroupID } = props;
 
   const { groupID } = props;
 
@@ -66,7 +68,7 @@ const GroupContent = (props) => {
         }
       </Stack>
       <Divider color={'#e2e2e2'}/>
-      <GroupDetail groupID={groupID} group={group} isUserAdmin={isUserAdmin} />
+      <GroupDetail groupID={groupID} group={group} isUserAdmin={isUserAdmin} isGroupListModified={isGroupListModified} setIsGroupListModified={setIsGroupListModified} setSelectedGroupID={setSelectedGroupID} />
     </>)
   )
 }

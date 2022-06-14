@@ -23,11 +23,10 @@ import CreateNewGroupModal from './CreateNewGroupModal';
 import useAxiosRes from '../../hooks/useAxiosRes';
 
 const GroupSelectionDrawer = (props) => {
-  const { selectedGroupID, setSelectedGroupID } = props;
+  const { selectedGroupID, setSelectedGroupID, isGroupListModified, setIsGroupListModified } = props;
 
   const [open, setOpen] = useState(false);
   const [groups, setGroups] = useState([]);
-  const [isGroupListModified, setIsGroupListModified] = useState(false);
 
   const openCreateNewGroupModal = () => setOpen(true);
   const closeCreateNewGroupModal = () => setOpen(false);
@@ -39,7 +38,7 @@ const GroupSelectionDrawer = (props) => {
   const axiosRes = useAxiosRes();
 
   useEffect(() => {
-    setIsGroupListModified(false);
+    setIsGroupListModified(false)
     axiosRes.get('/group')
       .then(response => {
         setGroups(response.data)
