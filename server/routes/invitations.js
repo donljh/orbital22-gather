@@ -87,7 +87,9 @@ router.post('/', userMW, async (req, res) => {
       return res.status(404).json({ message: 'Cannot find requested group' })
     }
 
-    if (group.members.map(member => member.id).includes(invitee.id)) {
+    const isMember = group.members.some( member => member.equals(invitee) )
+
+    if (isMember) {
       return res.status(400).json({ message: 'User is already in this group' })
     }
 
@@ -117,7 +119,7 @@ router.post('/', userMW, async (req, res) => {
 })
 
 // DELETE invitation by id
-router.delete('/:invitaton_id', userMW, async (req, res) => {
+router.delete('/:invitation_id', userMW, async (req, res) => {
   try {
     // Find invitation by id
     const invitation = await Invitation.findById(req.params.invitation_id)
@@ -125,19 +127,22 @@ router.delete('/:invitaton_id', userMW, async (req, res) => {
         path: 'group',
         populate: { path: 'admins', select: '_id' }
       })
+      .populate('invitee', '_id')
 
     if (invitation === null) {
       return res.status(404).json({ message: "Cannot find invitation" })
     }
 
-    const groupAdminIDs = invitation.group.admins.map( admin => admin.id );
+    const isAdmin = invitation.group.admins.some(admin => admin.equals(req.user));
 
-    // Check if requesting user is an admin of the group
-    if (!groupAdminIDs.include(req.user.id)) {
+    // Check if requesting user is an admin of the group or is the invitee
+    if (!isAdmin && !invitation.invitee.equals(req.user)) {
       return res.status(403).json({ 
-        message: 'User does not have permission to delete invitations' 
+        message: 'User does not have permission to delete this invitation' 
       });
     }
+
+    await invitation.delete();
 
     console.log('DELETED INVITATION')
     res.status(200).json({ message: 'Deleted invitation' })

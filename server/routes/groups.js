@@ -67,10 +67,10 @@ router.delete('/:group_id', userMW, async(req, res) => {
       return res.status(404).json({ message: 'Group cannot be found' });
     }
 
-    const adminIDs = group.admins.map(admin => admin.id);
+    const isAdmin = group.admins.some(admin => admin.equals(req.user))
 
     // Check if user is an admin of the group
-    if (!adminIDs.includes(req.user.id)) {
+    if (!isAdmin) {
       return res.status(403).json({ 
         message: 'User is not an admin of requested group'
       })
@@ -101,19 +101,19 @@ router.get('/:group_id', userMW, async(req, res) => {
       return res.status(404).json({ message: 'Group cannot be found' });
     }
 
-    const memberIDs = group.members.map(member => member.id);
+    const isMember = group.members.some(member => member.equals(req.user))
 
     // Check if user is a member of the group
-    if (!memberIDs.includes(req.user.id)) {
+    if (!isMember) {
       return res.status(403).json({ 
         message: 'User is not a member of requested group'
       })
     }    
 
-    const adminIDs = group.admins.map(admin => admin.id);
+    const isAdmin = group.admins.some(admin => admin.equals(req.user));
 
     // Check if user is an admin of the group
-    if (adminIDs.includes(req.user.id)) {
+    if (isAdmin) {
       return res.status(200).json({ group, isUserAdmin: true })
     }    
 
@@ -143,10 +143,10 @@ router.patch('/:group_id/join', userMW, async(req, res) => {
       return res.status(404).json({ message: 'Group cannot be found' });
     }
 
-    const memberIDs = group.members.map(member => member.id);
+    const isMember = group.members.some(member => member.equals(req.user))
 
     // Check if user is a member of the group
-    if (memberIDs.includes(req.user.id)) {
+    if (isMember) {
       return res.status(400).json({ 
         message: 'User is already a member of requested group'
       })
@@ -181,25 +181,25 @@ router.patch('/:group_id/leave', userMW, async(req, res) => {
       return res.status(404).json({ message: 'Group cannot be found' });
     }
 
-    const memberIDs = group.members.map(member => member.id);
+    const isMember = group.members.some(member => member.equals(req.user))
 
     // Check if user is a member of the group
-    if (!memberIDs.includes(req.user.id)) {
+    if (!isMember) {
       return res.status(403).json({ 
         message: 'User is not a member of requested group'
       })
     }    
 
     // If user is the only member, disband and delete the group
-    if (memberIDs.length === 1) {
+    if (group.members.length === 1) {
       await Group.findByIdAndDelete(req.params.group_id);
       return res.status(200).json({ message: 'Group has been disbanded' })
     }
 
-    const adminIDs = group.admins.map(admin => admin.id);
+    const isAdmin = group.admins.some(admin => admin.equals(req.user))
 
     // Check if user is the only admin of the group
-    if (adminIDs.includes(req.user.id) && adminIDs.length === 1) {
+    if (isAdmin && group.admins.length === 1) {
 
       // Remove user from the array of users
       group.members = group.members.filter( member => member.id !== req.user.id );
