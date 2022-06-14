@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -49,28 +49,29 @@ const CreateNewGroupModal = (props) => {
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={modalStyle}>
-      <Stack spacing={4} mb={4} >
-        <Typography variant="h6" color="white" textAlign='center'>Creating New Group</Typography>
-        <TextField 
-          color="warning"
-          name="groupName"
-          value={groupName}
-          label="Group Name" 
-          variant="outlined" 
-          onChange={onChange}
-          focused
-          inputProps={{ 
-            style: { 
-              color: 'white' 
-            }
-          }}
-          required/>
-      </Stack>
-      <Button 
-        disabled={!groupName} color="success" 
-        variant="contained" onClick={createNewGroup}>
-        Create Group
-      </Button>
+        <Stack spacing={4} mb={4} >
+          <Typography variant="h6" color="white" textAlign='center'>
+            Creating New Group
+          </Typography>
+          <TextField 
+            color="warning"
+            name="groupName"
+            value={groupName}
+            label="Group Name" 
+            variant="outlined" 
+            onChange={onChange}
+            focused
+            inputProps={{ 
+              style: { 
+                color: 'white' 
+              }
+            }}
+            required/>
+        </Stack>
+        <Button color="success" variant="contained" 
+          disabled={!groupName} onClick={createNewGroup}>
+          Create Group
+        </Button>
       </Box>   
     </Modal>
   )

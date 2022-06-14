@@ -76,6 +76,7 @@ router.delete('/:group_id', userMW, async(req, res) => {
       })
     }    
 
+    await group.delete();
     return res.status(200).json({ message: 'Group has been deleted' })
   } catch (err) {
     console.log('LEAVING GROUP FAILED: ' + err.message);
@@ -192,7 +193,7 @@ router.patch('/:group_id/leave', userMW, async(req, res) => {
 
     // If user is the only member, disband and delete the group
     if (group.members.length === 1) {
-      await Group.findByIdAndDelete(req.params.group_id);
+      await group.delete();
       return res.status(200).json({ message: 'Group has been disbanded' })
     }
 
@@ -201,15 +202,18 @@ router.patch('/:group_id/leave', userMW, async(req, res) => {
     // Check if user is the only admin of the group
     if (isAdmin && group.admins.length === 1) {
 
-      // Remove user from the array of users
-      group.members = group.members.filter( member => member.id !== req.user.id );
+      // Remove user from the array of members
+      group.members = group.members.filter( member => !member.equals(req.user));
 
       // If there are other members left, make one of them an admin
       group.admins.push(group.members[0]);
+
+      // Remove user from array of admins
+      group.admins = group.admins.filter( admin => !admin.equals(req.user));
     }
 
     // Remove user from the array of users
-    group.members = group.members.filter( member => member.id !== req.user.id );
+    group.members = group.members.filter( member => !member.equals(req.user) );
     await group.save();
 
     return res.status(200).json({ message: 'User left group' })

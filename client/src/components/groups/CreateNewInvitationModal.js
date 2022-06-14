@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -56,42 +56,46 @@ const CreateNewInvitationModal = (props) => {
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={modalStyle}>
-      <Stack spacing={4} mb={4} >
-        <Typography variant="h6" color="white" textAlign='center'>Inviting A User</Typography>
-        {errorMessage ? <Typography variant="subtitle" color="red">{errorMessage}</Typography> : <></>}
-        <TextField 
-          color="warning"
-          name="inviteeEmail"
-          value={inviteeEmail}
-          label="Invitee Email" 
-          variant="outlined" 
-          onChange={onChange}
-          focused
-          inputProps={{ 
-            style: { 
-              color: 'white' 
-            }
-          }}
-          required/>
+        <Stack spacing={4} mb={4} >
+          <Typography variant="h6" color="white" textAlign='center'>
+            Inviting A User
+          </Typography>
+          {errorMessage 
+            ? <Typography variant="subtitle" color="red">{errorMessage}</Typography> 
+            : <></>}
           <TextField 
-          color="warning"
-          name="message"
-          value={message}
-          label="Invite Message" 
-          variant="outlined" 
-          onChange={onChange}
-          focused
-          inputProps={{ 
-            style: { 
-              color: 'white' 
-            }
-          }}/>
-      </Stack>
-      <Button 
-        disabled={!inviteeEmail} color="success" 
-        variant="contained" onClick={createNewInvitation}>
-        Send Invite
-      </Button>
+            color="warning"
+            name="inviteeEmail"
+            value={inviteeEmail}
+            label="Invitee Email" 
+            variant="outlined" 
+            onChange={onChange}
+            focused
+            inputProps={{ 
+              style: { 
+                color: 'white' 
+              }
+            }}
+            required/>
+            <TextField 
+            color="warning"
+            name="message"
+            value={message}
+            label="Invite Message" 
+            variant="outlined" 
+            onChange={onChange}
+            focused
+            inputProps={{ 
+              style: { 
+                color: 'white' 
+              }
+            }}/>
+        </Stack>
+        <Button 
+          disabled={!inviteeEmail} color="success" 
+          variant="contained" onClick={createNewInvitation}>
+          Send Invite
+        </Button>
       </Box>   
     </Modal>
   )

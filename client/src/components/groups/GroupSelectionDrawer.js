@@ -3,18 +3,9 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Drawer from '@mui/material/Drawer';
-import Container from '@mui/material/Container'
-import AppBar from '@mui/material/AppBar';
-import CssBaseline from '@mui/material/CssBaseline';
 import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -23,7 +14,11 @@ import CreateNewGroupModal from './CreateNewGroupModal';
 import useAxiosRes from '../../hooks/useAxiosRes';
 
 const GroupSelectionDrawer = (props) => {
-  const { selectedGroupID, setSelectedGroupID, isGroupListModified, setIsGroupListModified } = props;
+  const { 
+    selectedGroupID, 
+    setSelectedGroupID, 
+    isGroupListModified, 
+    setIsGroupListModified } = props;
 
   const [open, setOpen] = useState(false);
   const [groups, setGroups] = useState([]);
@@ -44,7 +39,7 @@ const GroupSelectionDrawer = (props) => {
         setGroups(response.data)
       })
       .catch(err => console.log(err))
-  }, [axiosRes, isGroupListModified])
+  }, [axiosRes, isGroupListModified, setIsGroupListModified])
 
   return (<>
     <Drawer 
@@ -58,7 +53,10 @@ const GroupSelectionDrawer = (props) => {
           borderRight: '1px lightgrey solid' }}}>
       <Toolbar />
       <Box sx={{ p: 3 }}>
-        <Typography variant="h4" color="#ffffff" fontWeight='semi-bold' textAlign="center" gutterBottom>Your Groups</Typography>
+        <Typography 
+          variant="h4" color="#ffffff" 
+          fontWeight='semi-bold' textAlign="center" 
+          gutterBottom>Your Groups</Typography>
         <Divider color="#e2e2e2"/>
         <Stack direction="column" spacing={2} mt={2}>
           <Button 
@@ -92,7 +90,9 @@ const GroupSelectionDrawer = (props) => {
       </Box>
     </Drawer>
 
-    <CreateNewGroupModal open={open} onClose={closeCreateNewGroupModal} setIsGroupListModified={setIsGroupListModified}/>
+    <CreateNewGroupModal 
+      open={open} onClose={closeCreateNewGroupModal} 
+      setIsGroupListModified={setIsGroupListModified}/>
   </>
   )
 }

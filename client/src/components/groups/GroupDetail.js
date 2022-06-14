@@ -33,7 +33,8 @@ const GroupDetail = (props) => {
 
   const deleteGroup = () => {
     axiosRes.delete(`/group/${groupID}/`)
-      .then(() => {
+      .then(response => {
+        console.log(response)
         setIsGroupListModified(true)
         setSelectedGroupID(null)
       })
@@ -56,8 +57,8 @@ const GroupDetail = (props) => {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button onClick={leaveGroup}>Leave Group</Button>
-        {isUserAdmin && <Button onClick={deleteGroup}>Delete Group</Button>}
+        <Button color="error" variant="outlined" onClick={leaveGroup}>Leave Group</Button>
+        {isUserAdmin && <Button color="error" variant="outlined" onClick={deleteGroup}>Delete Group</Button>}
       </CardActions>
     </Card>
     <Card sx={{ background: "#282828" }}>
