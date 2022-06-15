@@ -21,7 +21,7 @@ router.get('/', userMW, async(req, res) => {
       group: groupID 
     })
       .populate('accepted')
-          
+
     const acceptedTasks = [];
     const pendingTasks = [];
 
@@ -152,11 +152,8 @@ router.delete('/:sharedtask_id', userMW, async(req, res) => {
     if (!sharedTask.group.members.some( member => member.equals(req.user))) {
       return res.status(403).json({ message: 'User is not allowed to access this task' })
     }
-
-    input.forEach(([field, value]) => sharedTask[field] = value);
-
-    await sharedTask.delete();
     
+    await sharedTask.delete();
     console.log('UPDATED SHARED TASK' + sharedTask);
     res.status(200).json(sharedTask);
   } catch (err) {

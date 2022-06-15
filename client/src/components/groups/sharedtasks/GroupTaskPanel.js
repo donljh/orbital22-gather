@@ -77,7 +77,7 @@ const GroupTaskPanel = (props) => {
           />
           <Stack py={'1.5rem'} spacing={'1.5rem'} mx={2}>
             {tasks.map(task => 
-              <SharedTaskCard task={task} key={task._id} 
+              <SharedTaskCard category={category} task={task} key={task._id} 
                 setIsTaskListModified={props.setIsTaskListModified}
               />)}
           </Stack>
