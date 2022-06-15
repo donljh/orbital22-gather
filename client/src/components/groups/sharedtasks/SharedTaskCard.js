@@ -4,6 +4,7 @@ import useAxiosRes from '../../../hooks/useAxiosRes';
 import EditSharedTaskForm from './EditSharedTaskForm';
 
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Modal from '@mui/material/Modal';
@@ -13,6 +14,7 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 
 import EditIcon from '@mui/icons-material/Edit'
+import { CardActions } from '@mui/material';
 
 const modalStyle = {
   position: 'absolute',
@@ -34,6 +36,8 @@ const SharedTaskCard = (props) => {
   const axiosRes = useAxiosRes();
 
   const {_id, title, description, dueDate} = props.task;
+  const groupID = props.task.group;
+
   const displayDate = new Date(dueDate)
     .toLocaleString('en-GB', { day: 'numeric', month:'short' })
 
@@ -41,6 +45,12 @@ const SharedTaskCard = (props) => {
     axiosRes.delete(`/task/${_id}`)
     .then(response => setCompleted(true))
     .catch(err => console.log(err));
+  }
+
+  const acceptTask = () => {
+    axiosRes.patch(`/group/${groupID}/sharedtasks/${_id}/accepted`)
+      .then(response => console.log(response))
+      .catch(console.log)
   }
 
   const openEditSharedTaskForm = () => setOpen(true);
@@ -80,14 +90,18 @@ const SharedTaskCard = (props) => {
                 {description}
               </Typography>
             </CardContent>
+            <CardActions>
+              <Button color="success" variant="contained" onClick={acceptTask}>
+                Accept
+              </Button>
+            </CardActions>
           </Card>
 
           <Modal open={open} onClose={closeEditSharedTaskForm} >
               <Box sx={modalStyle}>
                 <EditSharedTaskForm 
-                groupID={props.groupID}
-                task={props.task} 
-                setIsTaskListModified={props.setIsTaskListModified}/>
+                  task={props.task} 
+                  setIsTaskListModified={props.setIsTaskListModified}/>
               </Box> 
           </Modal>
         </>

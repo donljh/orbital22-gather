@@ -19,8 +19,9 @@ router.get('/', userMW, async(req, res) => {
     // Find all shared tasks associated with logged in user id
     const sharedTasks = await SharedTask.find({ 
       group: groupID 
-    });
-    
+    })
+      .populate('accepted')
+          
     const acceptedTasks = [];
     const pendingTasks = [];
 
@@ -173,13 +174,13 @@ router.patch('/:sharedtask_id/accepted', userMW, async(req, res) => {
     }).populate({
       path: 'group',
       populate: { path: 'members', select: '_id'}
-    });       
+    }).populate('accepted');       
 
     if (sharedTask === null) {
       return res.status(404).json({ message: 'Shared task cannot be found' })
     }
 
-    if (!sharedTask.group.members.some( member => member.equals(req.user))) {
+    if (!sharedTask.group.members.some(member => member.equals(req.user))) {
       return res.status(403).json({ message: 'User is not allowed to access this task' })
     }
 
@@ -191,7 +192,7 @@ router.patch('/:sharedtask_id/accepted', userMW, async(req, res) => {
 
     await sharedTask.save();
     
-    console.log('ACCEPTED SHARED TASK' + sharedTask);
+    console.log('ACCEPTED SHARED TASK');
     res.status(200).json(sharedTask);
   } catch (err) {
     console.log('UPDATING SHARED TASK FAILED: ' + err.message);
@@ -208,7 +209,7 @@ router.patch('/:sharedtask_id/completed', userMW, async(req, res) => {
     }).populate({
       path: 'group',
       populate: { path: 'members', select: '_id'}
-    });       
+    }).populate('accepted')
 
     if (sharedTask === null) {
       return res.status(404).json({ message: 'Shared task cannot be found' })
