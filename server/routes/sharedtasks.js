@@ -21,23 +21,28 @@ router.get('/', userMW, async(req, res) => {
       group: groupID 
     })
       .populate('accepted')
+      .populate('completed')
 
-    const acceptedTasks = [];
     const pendingTasks = [];
+    const acceptedTasks = [];
+    const completedTasks = [];
 
     // If there are tasks
     if (sharedTasks) {
       sharedTasks.forEach(task => {
-        const accepted = task.accepted.some(acceptedMember => acceptedMember.equals(req.user))
-        if (accepted) acceptedTasks.push(task);
+        const accepted = task.accepted.some(acceptedMember => acceptedMember.equals(req.user));
+        const completed = task.completed.some(completedMember => completedMember.equals(req.user));
+        if (accepted && !completed) acceptedTasks.push(task);
+        if (completed) completedTasks.push(task);
         else pendingTasks.push(task);
       })
     }    
     
     // console.log('GETTING TASKS: ' + tasks);
     return res.status(200).json({
+      pendingTasks,
       acceptedTasks,
-      pendingTasks
+      completedTasks
     }); 
   } catch (err) {
     console.log('GETTING SHARED TASKS FAILED: ' + err.message);

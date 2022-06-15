@@ -11,10 +11,11 @@ const GroupTaskManager = (props) => {
   const groupID = props.groupID;
 
   // Tracks the 3 categories of tasks
-  const [acceptedTasks, setAcceptedTasks] = useState([]);
   const [pendingTasks, setPendingTasks] = useState([]);
+  const [acceptedTasks, setAcceptedTasks] = useState([]);
+  const [completedTasks, setCompletedTasks] = useState([])
 
-  // Default selected category is 'today' --> shows tasks for the current day
+  // Default selected category is 'pending' --> shows tasks that user has not accepted
   const [selectedCategory, setSelectedCategory] = useState('pending');
 
   // Tracks if a task has been added/edited
@@ -30,8 +31,9 @@ const GroupTaskManager = (props) => {
   useEffect(() => {
     axiosRes.get(`/group/${groupID}/sharedtasks`).then(response => {
       setIsTaskListModified(false);
-      setAcceptedTasks(response.data.acceptedTasks);
       setPendingTasks(response.data.pendingTasks);
+      setAcceptedTasks(response.data.acceptedTasks);
+      setCompletedTasks(response.data.completedTasks);
     })   
   }, [axiosRes, isTaskListModified])
 
@@ -44,7 +46,7 @@ const GroupTaskManager = (props) => {
         justifyContent='center' 
         divider={<Divider orientation='vertical' sx={{ background: '#e2e2e2'}} />}>
         {
-          ['pending', 'accepted'].map(category => 
+          ['pending', 'accepted', 'completed'].map(category => 
           <Button 
             key={category}
             sx={{ borderRadius: '20px', background: (category === selectedCategory) ? '' : '#282828' }}
@@ -58,7 +60,8 @@ const GroupTaskManager = (props) => {
       </Stack>
       {
         [['pending', pendingTasks],
-          ['accepted', acceptedTasks]].map(category => 
+          ['accepted', acceptedTasks],
+          ['completed', completedTasks]].map(category => 
           <GroupTaskPanel 
             groupID={groupID}
             key={category}
