@@ -33,8 +33,8 @@ router.get('/', userMW, async(req, res) => {
         const accepted = task.accepted.some(acceptedMember => acceptedMember.equals(req.user));
         const completed = task.completed.some(completedMember => completedMember.equals(req.user));
         if (accepted && !completed) acceptedTasks.push(task);
-        if (completed) completedTasks.push(task);
-        else pendingTasks.push(task);
+        else if (!accepted && !completed) pendingTasks.push(task);
+        else if (completed) completedTasks.push(task);
       })
     }    
     

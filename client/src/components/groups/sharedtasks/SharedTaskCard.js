@@ -32,6 +32,7 @@ const modalStyle = {
 
 const SharedTaskCard = (props) => {
   const [open, setOpen] = useState(false);
+  const [accepted, setAccepted] = useState(false);
   const axiosRes = useAxiosRes();
 
   const { setIsTaskListModified } = props
@@ -43,13 +44,16 @@ const SharedTaskCard = (props) => {
 
   const deleteTask = () => {
     axiosRes.delete(`/group/${groupID}/sharedtasks/${_id}`)
-    .then(response => setIsTaskListModified(true))
-    .catch(err => console.log(err));
+      .then(response => setIsTaskListModified(true))
+      .catch(console.log);
   }
 
   const acceptTask = () => {
     axiosRes.patch(`/group/${groupID}/sharedtasks/${_id}/accepted`)
-      .then(response => setIsTaskListModified(true))
+      .then(response => {
+        setAccepted(true)
+        setIsTaskListModified(true)
+      })
       .catch(console.log)
   }
 
@@ -57,55 +61,57 @@ const SharedTaskCard = (props) => {
   const closeEditSharedTaskForm = () => setOpen(false);
 
   return(
-    <>
-      <Card sx={{ backgroundColor: '#282828'}}>
-        <CardContent sx={{ py: 1 }}>
-          <Stack direction="row" justifyContent="space-between">
-            <Typography 
-              sx={{ overflow: 'hidden', textOverflow: 'ellipsis'}} 
-              variant="h6" component="span" 
-              color="#e2e2e2" fontWeight='semi-bold' 
-              gutterBottom>
-              {title}
-            </Typography>
-            <Stack direction="row">
-              <Checkbox 
-                disableRipple 
-                onChange={deleteTask} color="primary"/>
-              <IconButton disableRipple onClick={openEditSharedTaskForm}>
-                <EditIcon />
-              </IconButton>
-            </Stack>
-          </Stack>
-          <Typography 
-            variant="button" component="span" 
-            color="#e2e2e2" gutterBottom>
-            {`${displayDate}`}
-          </Typography>
-          <Typography sx={{ textOverflow: 'ellipsis' }} 
-            variant="body2" component="p" 
-            color="#676767">
-            {description}
-          </Typography>
-        </CardContent>
-        {
-          (props.category === "pending") &&
-          <CardActions>
-            <Button color="success" variant="contained" onClick={acceptTask}>
-              Accept
-            </Button>
-          </CardActions>
-        }
-      </Card>
+    accepted 
+      ? <></>
+      : <>
+          <Card sx={{ backgroundColor: '#282828'}}>
+            <CardContent sx={{ py: 1 }}>
+              <Stack direction="row" justifyContent="space-between">
+                <Typography 
+                  sx={{ overflow: 'hidden', textOverflow: 'ellipsis'}} 
+                  variant="h6" component="span" 
+                  color="#e2e2e2" fontWeight='semi-bold' 
+                  gutterBottom>
+                  {title}
+                </Typography>
+                <Stack direction="row">
+                  <Checkbox 
+                    disableRipple 
+                    onChange={deleteTask} color="primary"/>
+                  <IconButton disableRipple onClick={openEditSharedTaskForm}>
+                    <EditIcon />
+                  </IconButton>
+                </Stack>
+              </Stack>
+              <Typography 
+                variant="button" component="span" 
+                color="#e2e2e2" gutterBottom>
+                {`${displayDate}`}
+              </Typography>
+              <Typography sx={{ textOverflow: 'ellipsis' }} 
+                variant="body2" component="p" 
+                color="#676767">
+                {description}
+              </Typography>
+            </CardContent>
+            {
+              (props.category === "pending") &&
+              <CardActions>
+                <Button color="success" variant="contained" onClick={acceptTask}>
+                  Accept
+                </Button>
+              </CardActions>
+            }
+          </Card>
 
-      <Modal open={open} onClose={closeEditSharedTaskForm} >
-          <Box sx={modalStyle}>
-            <EditSharedTaskForm 
-              task={props.task} 
-              setIsTaskListModified={props.setIsTaskListModified}/>
-          </Box> 
-      </Modal>
-    </>
+          <Modal open={open} onClose={closeEditSharedTaskForm} >
+              <Box sx={modalStyle}>
+                <EditSharedTaskForm 
+                  task={props.task} 
+                  setIsTaskListModified={props.setIsTaskListModified}/>
+              </Box> 
+          </Modal>
+        </>
   )
 }
 
