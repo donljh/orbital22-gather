@@ -46,8 +46,9 @@ router.get('/shared', userMW, async(req, res) => {
   try {
     // Find all shared tasks associated with logged in user id
     const sharedTasks = await SharedTask.find({ 
-      members: { $in: req.user } 
-    });
+      accepted: { $in: req.user },
+      completed: { $nin: req.user} 
+    }).populate('group', 'name');
     
     const sharedOverdueTasks = [];
     const sharedTodayTasks = [];

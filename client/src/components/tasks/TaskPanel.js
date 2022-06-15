@@ -82,7 +82,7 @@ const Header = (props) => {
 }
 
 const TaskPanel = (props) => {
-  const {category, selectedCategory, tasks} = props;
+  const {category, selectedCategory, tasks, sharedTasks} = props;
 
   return(
     (category !== selectedCategory) 
@@ -93,6 +93,10 @@ const TaskPanel = (props) => {
             setIsTaskListModified={props.setIsTaskListModified} 
           />
           <Stack py={'1.5rem'} spacing={'1.5rem'} mx={2}>
+            {sharedTasks.map(task => 
+              <TaskCard task={task} key={task._id} shared
+                setIsTaskListModified={props.setIsTaskListModified} 
+              />)}
             {tasks.map(task => 
               <TaskCard task={task} key={task._id} 
                 setIsTaskListModified={props.setIsTaskListModified}
