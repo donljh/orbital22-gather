@@ -41,8 +41,8 @@ const SharedTaskCard = (props) => {
 
   const completeTask = () => {
     axiosRes.patch(`/group/${task.group._id}/sharedtasks/${_id}/completed`)
-    .then(response => setCompleted(true))
-    .catch(err => console.log(err));
+      .then(response => setCompleted(true))
+      .catch(err => console.log(err));
   }
 
   return(

@@ -229,7 +229,7 @@ router.patch('/:sharedtask_id/completed', userMW, async(req, res) => {
       return res.status(400).json({ message: 'User has already completed this task' })
     }
 
-    sharedTask.completed = [...sharedTask.accepted, req.user]
+    sharedTask.completed = [...sharedTask.completed, req.user]
 
     await sharedTask.save();
     

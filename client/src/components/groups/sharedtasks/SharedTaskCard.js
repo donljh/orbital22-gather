@@ -7,6 +7,7 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import Chip from '@mui/material/Chip';
 import Modal from '@mui/material/Modal';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -36,8 +37,12 @@ const SharedTaskCard = (props) => {
   const axiosRes = useAxiosRes();
 
   const { setIsTaskListModified } = props
-  const {_id, title, description, dueDate} = props.task;
-  const groupID = props.task.group;
+  const task = props.task;
+
+  const { _id, title, description, dueDate } = task;
+  const acceptedMembers = task.accepted;
+  const completedMembers = task.completed;
+  const groupID = task.group;
 
   const displayDate = new Date(dueDate)
     .toLocaleString('en-GB', { day: 'numeric', month:'short' })
@@ -74,7 +79,9 @@ const SharedTaskCard = (props) => {
                   gutterBottom>
                   {title}
                 </Typography>
-                <Stack direction="row">
+                <Stack direction="row" spacing={1}>
+                  <Chip color="success" label={`${completedMembers.length} completed`}></Chip>
+                  <Chip color="warning" label={`${acceptedMembers.length} accepted`}></Chip>
                   <Checkbox 
                     disableRipple 
                     onChange={deleteTask} color="primary"/>

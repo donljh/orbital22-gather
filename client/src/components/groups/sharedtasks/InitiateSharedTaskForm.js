@@ -39,8 +39,6 @@ const InitiateSharedTaskForm = (props) => {
     .catch(err => console.log(err.data));
   }
 
-  useEffect(() => console.log(groupID));
-
   return(
     <form>
       <Stack mb={4} spacing={4}>
