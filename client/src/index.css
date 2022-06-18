@@ -95,3 +95,7 @@ a {
 .fc .fc-daygrid-day-number {
   color: #ffffff;
 }
+
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
