@@ -30,11 +30,13 @@ router.get('/', userMW, async(req, res) => {
       })
     }    
     
-    // console.log('GETTING TASKS: ' + tasks);
-    return res.status(200).json({ 
+    console.log('GETTING TASKS: ' + tasks);
+    return res.status(200).json({
+      allTasks: tasks,
       overdueTasks: overdueTasks, 
       todayTasks: todayTasks,
-      upcomingTasks: upcomingTasks }); 
+      upcomingTasks: upcomingTasks
+    }); 
   } catch (err) {
     console.log('GETTING TASKS FAILED: ' + err.message);
     res.status(500).json({ message: 'INTERNAL SERVER ERROR' });

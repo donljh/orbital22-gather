@@ -87,3 +87,15 @@ a {
   color: #318ba3;
   text-decoration: none;
 }
+
+.fc .fc-col-header-cell-cushion {
+  color: #ffffff;
+}
+
+.fc .fc-daygrid-day-number {
+  color: #ffffff;
+}
+
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
