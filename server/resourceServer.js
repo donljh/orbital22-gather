@@ -9,3 +9,5 @@ app.use("/user", require('./routes/users'));
 app.use("/profile", require('./routes/profiles'));
 app.use("/task", require('./routes/tasks'));
 app.use("/event", require('./routes/events'));
+app.use("/group", require('./routes/groups'));
+app.use("/invitation", require('./routes/invitations'));

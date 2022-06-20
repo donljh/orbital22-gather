@@ -14,6 +14,10 @@ const TaskManager = () => {
   const [todayTasks, setTodayTasks] = useState([]);
   const [upcomingTasks, setUpcomingTasks] = useState([]);
 
+  const [sharedOverdueTasks, setSharedOverdueTasks] = useState([]);
+  const [sharedTodayTasks, setSharedTodayTasks] = useState([]);
+  const [sharedUpcomingTasks, setSharedUpcomingTasks] = useState([]);
+
   // Default selected category is 'today' --> shows tasks for the current day
   const [selectedCategory, setSelectedCategory] = useState('today');
 
@@ -33,7 +37,14 @@ const TaskManager = () => {
       setOverdueTasks(response.data.overdueTasks);
       setTodayTasks(response.data.todayTasks);
       setUpcomingTasks(response.data.upcomingTasks);  
-    })   
+    })
+    
+    axiosRes.get('/task/shared').then(response => {
+      setIsTaskListModified(false);
+      setSharedOverdueTasks(response.data.sharedOverdueTasks);
+      setSharedTodayTasks(response.data.sharedTodayTasks);
+      setSharedUpcomingTasks(response.data.sharedUpcomingTasks)
+    })
   }, [axiosRes, isTaskListModified])
 
   return (
@@ -47,7 +58,9 @@ const TaskManager = () => {
         {
           ['overdue', 'today', 'upcoming'].map(category => 
           <Button 
-            sx={{ borderRadius: '20px', background: '#282828' }}
+            key={category}
+            sx={{ borderRadius: '20px', background: (category === selectedCategory) ? '' : '#282828' }}
+            color="warning"
             variant='contained'
             value={category}
             onClick={handleCategoryButtonClick}>
@@ -57,12 +70,14 @@ const TaskManager = () => {
       </Stack>
 
       {
-        [['overdue', overdueTasks],
-         ['today', todayTasks],
-         ['upcoming', upcomingTasks]].map(category => 
+        [['overdue', overdueTasks, sharedOverdueTasks],
+         ['today', todayTasks, sharedTodayTasks],
+         ['upcoming', upcomingTasks, sharedUpcomingTasks]].map(category => 
           <TaskPanel 
+            key={category}
             category={category[0]} 
             tasks={category[1]}
+            sharedTasks={category[2]}
             selectedCategory={selectedCategory}
             setIsTaskListModified={setIsTaskListModified}
           />)
