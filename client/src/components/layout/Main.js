@@ -1,7 +1,7 @@
 import React from 'react'
 import { Outlet } from 'react-router'
 import Box from '@mui/material/Box'
-import Navbar from '../Navbar/Navbar'
+import Navbar from '../nav/Navbar'
 import { styled } from '@mui/system'
 
 const AppContentWrapper = styled(Box)({
