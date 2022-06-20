@@ -50,12 +50,12 @@ const Navbar = () => {
   }
 
   return(
-    <AppBar position="sticky">
+    <AppBar position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar sx={{ 
           justifyContent: 'space-between', 
           backgroundColor: '#282828' }}>
         <Avatar alt="Gather Logo" src={Logo} />
-        <Stack direction="row">
+        <Stack direction="row" spacing={2}>
           {links.map(link=> (
             <Button 
               color="warning"
@@ -64,7 +64,7 @@ const Navbar = () => {
               startIcon={link[1]}
               value={link[0].replace(" ","")} 
               onClick={handleFeatureLinkClick}
-              sx={{ background:'#282828', mx: 2 }}
+              sx={{ background:'#282828' }}
               size="medium"
             > 
             {link[0] || 'dashboard' } 

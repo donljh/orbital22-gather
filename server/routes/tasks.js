@@ -4,6 +4,7 @@ const { auth } = require('../middleware/auth');
 const setUser = require('../middleware/setUser');
 
 const Task = require('../models/Task');
+const SharedTask = require('../models/SharedTask');
 
 // Middleware to authenticate and set request user to be same as user in DB
 // req.user --> user (in DB)
@@ -29,11 +30,47 @@ router.get('/', userMW, async(req, res) => {
       })
     }    
     
-    // console.log('GETTING TASKS: ' + tasks);
-    return res.status(200).json({ 
+    console.log('GETTING TASKS: ' + tasks);
+    return res.status(200).json({
+      allTasks: tasks,
       overdueTasks: overdueTasks, 
       todayTasks: todayTasks,
-      upcomingTasks: upcomingTasks }); 
+      upcomingTasks: upcomingTasks
+    }); 
+  } catch (err) {
+    console.log('GETTING TASKS FAILED: ' + err.message);
+    res.status(500).json({ message: 'INTERNAL SERVER ERROR' });
+  }
+})
+
+// GET all shared tasks of currently logged in user
+router.get('/shared', userMW, async(req, res) => {
+  try {
+    // Find all shared tasks associated with logged in user id
+    const sharedTasks = await SharedTask.find({ 
+      accepted: { $in: req.user },
+      completed: { $nin: req.user} 
+    }).populate('group', 'name');
+    
+    const sharedOverdueTasks = [];
+    const sharedTodayTasks = [];
+    const sharedUpcomingTasks = [];
+
+    // If there are tasks
+    if (sharedTasks) {
+      sharedTasks.forEach(task => {
+        const taskType = getTaskType(task);
+        if (taskType === 'overdue') sharedOverdueTasks.push(task);
+        else if (taskType === 'today') sharedTodayTasks.push(task);
+        else if (taskType === 'upcoming') sharedUpcomingTasks.push(task);
+      })
+    }    
+    
+    // console.log('GETTING TASKS: ' + tasks);
+    return res.status(200).json({ 
+      sharedOverdueTasks: sharedOverdueTasks, 
+      sharedTodayTasks: sharedTodayTasks,
+      sharedUpcomingTasks: sharedUpcomingTasks }); 
   } catch (err) {
     console.log('GETTING TASKS FAILED: ' + err.message);
     res.status(500).json({ message: 'INTERNAL SERVER ERROR' });
@@ -67,8 +104,6 @@ router.get('/:task_id', userMW, async(req, res) => {
 // POST (Create) a new task of currently logged in user
 router.post('/', userMW, async (req, res) => {
   try {
-    console.log(req.user.id);
-
     // Get user input from request body
     const { title, description, dueDate } = req.body;
 
