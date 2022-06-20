@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 
-import CreateTaskForm from './CreateTaskForm';
-import TaskCard from './TaskCard';
-
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider';
 import Modal from '@mui/material/Modal';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
+import InitiateSharedTaskForm from './InitiateSharedTaskForm';
+import SharedTaskCard from './SharedTaskCard'
 
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
@@ -30,20 +28,11 @@ const modalStyle = {
 const Header = (props) => {
   const [open, setOpen] = useState(false);
 
-  const { selectedCategory } = props;
+  const { selectedCategory, groupID } = props;
 
-  const openCreateTaskForm = () => setOpen(true);
-  const closeCreateTaskForm = () => setOpen(false);
+  const openCreateSharedTaskForm = () => setOpen(true);
+  const closeCreateSharedTaskForm = () => setOpen(false);
 
-  const now = new Date()
-    .toLocaleDateString(
-      'en-GB', 
-      { weekday: 'long', 
-        day: 'numeric', 
-        month: 'short', 
-        year: 'numeric'
-      }
-    );  
 
   return (
     <>
@@ -56,49 +45,39 @@ const Header = (props) => {
             fontWeight='bold' textTransform="uppercase">
             {selectedCategory}
           </Typography>
-          {selectedCategory === 'today' 
-            ? (<>
-                <Divider orientation='vertical' sx={{ background: '#e2e2e2'}} />
-                <Typography variant='h6' sx={{ color: '#676767' }}>{now}</Typography>
-              </>)
-            : (<></>)
-          }
         </Stack>
         <Button 
           sx={{ borderRadius: '20px' }} startIcon={<AddOutlinedIcon />} 
           color='success' variant='contained' size='small' 
-          onClick={openCreateTaskForm}> 
-          New Task 
+          onClick={openCreateSharedTaskForm}> 
+          Initiate Task 
         </Button>       
       </Stack> 
 
-      <Modal open={open} onClose={closeCreateTaskForm} >
+      <Modal open={open} onClose={closeCreateSharedTaskForm} >
         <Box sx={modalStyle}>
-          <CreateTaskForm setIsTaskListModified={props.setIsTaskListModified}/>
+          <InitiateSharedTaskForm groupID={groupID} setIsTaskListModified={props.setIsTaskListModified}/>
         </Box> 
       </Modal>
     </>
   )
 }
 
-const TaskPanel = (props) => {
-  const {category, selectedCategory, tasks, sharedTasks} = props;
+const GroupTaskPanel = (props) => {
+  const {category, selectedCategory, groupID, tasks} = props;
 
   return(
     (category !== selectedCategory) 
       ? <></> 
-      : <Box px={'25%'}>
+      : <Box px={'10%'}>
           <Header 
+            groupID={groupID}
             selectedCategory={selectedCategory} 
             setIsTaskListModified={props.setIsTaskListModified} 
           />
           <Stack py={'1.5rem'} spacing={'1.5rem'} mx={2}>
-            {sharedTasks.map(task => 
-              <TaskCard task={task} key={task._id} shared
-                setIsTaskListModified={props.setIsTaskListModified} 
-              />)}
             {tasks.map(task => 
-              <TaskCard task={task} key={task._id} 
+              <SharedTaskCard category={category} task={task} key={task._id} 
                 setIsTaskListModified={props.setIsTaskListModified}
               />)}
           </Stack>
@@ -106,4 +85,4 @@ const TaskPanel = (props) => {
   )
 }
 
-export default TaskPanel;
+export default GroupTaskPanel;

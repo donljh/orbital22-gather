@@ -4,6 +4,7 @@ const { auth } = require('../middleware/auth');
 const setUser = require('../middleware/setUser');
 
 const Group = require('../models/Group');
+const SharedTask = require('../models/SharedTask');
 
 // Middleware to authenticate and set request user to be same as user in DB
 // req.user --> user (in DB)
@@ -222,5 +223,7 @@ router.patch('/:group_id/leave', userMW, async(req, res) => {
     res.status(500).json({ message: 'INTERNAL SERVER ERROR' })
   }
 })
+
+router.use('/:group_id/sharedtasks', require('./sharedtasks'))
 
 module.exports = router;

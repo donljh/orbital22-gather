@@ -5,15 +5,22 @@ import Divider from '@mui/material/Divider';
 
 import useAxiosRes from '../../hooks/useAxiosRes';
 import GroupDetail from './GroupDetail';
+import GroupTaskManager from './sharedtasks/GroupTaskManager';
 
 const GroupContent = (props) => {
   const [group, setGroup] = useState(null);
   const [isUserAdmin, setIsUserAdmin] = useState(false);
+  const [selectedContent, setSelectedContent] = useState('details');
   const { isGroupListModified, setIsGroupListModified, setSelectedGroupID } = props;
+
 
   const { groupID } = props;
 
   const axiosRes = useAxiosRes();
+
+  const setContentCategory = e => {
+    setSelectedContent(e.target.value)
+  }
 
   useEffect(() => {
     axiosRes.get(`/group/${groupID}`)
@@ -23,6 +30,17 @@ const GroupContent = (props) => {
       })
       .catch(console.log);
   }, [axiosRes, groupID])
+
+  let SelectedContentComponent = <></>;
+  if (selectedContent === 'details') {
+    SelectedContentComponent = <GroupDetail
+      groupID={groupID} group={group} isUserAdmin={isUserAdmin} 
+      isGroupListModified={isGroupListModified} 
+      setIsGroupListModified={setIsGroupListModified} 
+      setSelectedGroupID={setSelectedGroupID} />
+  } else if (selectedContent === 'tasks') {
+    SelectedContentComponent = <GroupTaskManager groupID={groupID}/>
+  }
 
   return (
     (group &&
@@ -34,23 +52,21 @@ const GroupContent = (props) => {
         justifyContent='center' 
         >
         {
-          ['details', 'calendar', 'tasks'].map(category => 
+          ['details', 'calendar', 'tasks'].map(contentCategory => 
             <Button 
-              key={category}
-              sx={{ borderRadius: '20px', background: (category === 'details') ? '' : '#282828' }}
+              key={contentCategory}
+              sx={{ borderRadius: '20px', background: (contentCategory === selectedContent) ? '' : '#282828' }}
               color="warning"
               variant='contained'
-              value={category}>
-              {category}
+              value={contentCategory}
+              onClick={setContentCategory}>
+              {contentCategory}
             </Button>)
         }
       </Stack>
       <Divider color={'#e2e2e2'}/>
-      <GroupDetail 
-        groupID={groupID} group={group} isUserAdmin={isUserAdmin} 
-        isGroupListModified={isGroupListModified} 
-        setIsGroupListModified={setIsGroupListModified} 
-        setSelectedGroupID={setSelectedGroupID} />
+      {SelectedContentComponent}
+
     </>)
   )
 }
