@@ -6,6 +6,7 @@ import Divider from '@mui/material/Divider';
 import useAxiosRes from '../../hooks/useAxiosRes';
 import GroupDetail from './GroupDetail';
 import GroupTaskManager from './sharedtasks/GroupTaskManager';
+import GroupCalendar from './sharedcalendar/GroupCalendar';
 
 const GroupContent = (props) => {
   const [group, setGroup] = useState(null);
@@ -38,6 +39,8 @@ const GroupContent = (props) => {
       isGroupListModified={isGroupListModified} 
       setIsGroupListModified={setIsGroupListModified} 
       setSelectedGroupID={setSelectedGroupID} />
+  } else if (selectedContent === 'calendar') {
+    SelectedContentComponent = <GroupCalendar groupID={groupID}/>
   } else if (selectedContent === 'tasks') {
     SelectedContentComponent = <GroupTaskManager groupID={groupID}/>
   }

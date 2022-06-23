@@ -1,5 +1,5 @@
-import React, { createRef, useEffect, useState } from 'react'
-import useAxiosRes from '../hooks/useAxiosRes';
+import React, { useEffect, useState } from 'react'
+import useAxiosRes from '../../../hooks/useAxiosRes';
 
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -8,17 +8,16 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 
-import EventPopup from '../components/events/EventPopup';
-import CreateEventForm from '../components/events/CreateEventForm';
-import EditEventForm from '../components/events/EditEventForm';
+import CreateSharedEventForm from './CreateSharedEventForm';
+import EditSharedEventForm from './EditSharedEventForm';
+import SharedEventPopup from './SharedEventPopup';
 
-const Calendar = () => {
+const GroupCalendar = (props) => {
+
+  const groupID = props.groupID;
 
   // Array that holds all event details
   const [eventsArray, setEventsArray] = useState([]);
-
-  // Array that holds all shared event details
-  const [sharedEventsArray, setSharedEventsArray] = useState([]);
 
   const axiosRes = useAxiosRes();
 
@@ -64,11 +63,13 @@ const Calendar = () => {
   }
 
   const handleEventMouseEnter = (arg) => {
-    arg.el.style.borderColor = '#f7f7f7';
+    arg.el.style.backgroundColor = '#c7b936';
+    arg.el.style.borderColor = '#c7b936';
   }
 
   const handleEventMouseLeave = (arg) => {
-    arg.el.style.borderColor = arg.el.style.backgroundColor;
+    arg.el.style.backgroundColor = '#318ba3';
+    arg.el.style.borderColor = '#318ba3';
   }
   
   // Handle edit event click
@@ -87,7 +88,7 @@ const Calendar = () => {
 
   // Retrive events from database and update events
   useEffect(() => {
-    axiosRes.get('/event').then(response => {
+    axiosRes.get(`/group/${groupID}/sharedevents`).then(response => {
       setIsEventsModified(false);
       let data = response.data.events.map((e) => {
         e.start = e.startDate;
@@ -95,16 +96,6 @@ const Calendar = () => {
         return e;
       });
       setEventsArray(data);
-    })
-
-    axiosRes.get('/event/shared').then(response => {
-      setIsEventsModified(false);
-      let data = response.data.sharedEvents.map((e) => {
-        e.start = e.startDate;
-        e.end = e.endDate;
-        return e;
-      });
-      setSharedEventsArray(data);
     })
   }, [axiosRes, isEventsModified])
 
@@ -116,7 +107,7 @@ const Calendar = () => {
         eventClick={handleEventClick}
         eventMouseEnter={handleEventMouseEnter}
         eventMouseLeave={handleEventMouseLeave}
-        events={[...eventsArray, ...sharedEventsArray]}
+        events={eventsArray}
         eventColor='#318ba3'
         eventDisplay='block'
         displayEventTime={false}
@@ -145,11 +136,12 @@ const Calendar = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <EventPopup
+        <SharedEventPopup
           eventData={eventData}
           closeEvent={closeEvent}
           editEvent={editEvent}
           setIsEventsModified={setIsEventsModified}
+          groupID={groupID}
         />
       </Modal>
       <Modal
@@ -158,10 +150,11 @@ const Calendar = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <CreateEventForm
+        <CreateSharedEventForm
           initDate={initDate}
           setIsEventsModified={setIsEventsModified}
           closeForm={closeCreate}
+          groupID={groupID}
         />
       </Modal>
       <Modal
@@ -170,14 +163,15 @@ const Calendar = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <EditEventForm
+        <EditSharedEventForm
           eventData={eventData}
           setIsEventsModified={setIsEventsModified}
           closeForm={closeForm}
+          groupID={groupID}
         />
       </Modal>
     </div>
   )
 }
 
-export default Calendar
+export default GroupCalendar
