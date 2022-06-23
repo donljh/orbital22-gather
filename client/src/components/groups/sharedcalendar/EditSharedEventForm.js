@@ -62,7 +62,7 @@ const EditSharedEventForm = (props) => {
         <Box sx={formStyle}>
             <form>
                 <Stack mb={4} spacing={4}>
-                    <Typography variant="h6" textAlign='center'>Editing An Event</Typography>
+                    <Typography variant="h6" textAlign='center'>Editing A Shared Event</Typography>
                     <TextField
                         name="title"
                         value={title}
