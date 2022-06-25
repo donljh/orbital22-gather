@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import useAxiosRes from '../../hooks/useAxiosRes';
+import useAxiosRes from '../../../hooks/useAxiosRes';
 
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack';
@@ -20,13 +20,14 @@ const popupStyle = {
   pb: 2
 };
 
-const EventPopup = (props) => {
+const SharedEventPopup = (props) => {
 
   const axiosRes = useAxiosRes();
+  const groupID = props.groupID;
 
   const deleteEvent = () => {
     const id = props.eventData.id;
-    axiosRes.delete(`/event/${id}`)
+    axiosRes.delete(`/group/${groupID}/sharedevents/${id}`) 
       .then(response => {
         props.closeEvent();
         props.setIsEventsModified(true);
@@ -52,26 +53,21 @@ const EventPopup = (props) => {
             <b>End</b>: {props.eventData.end}
           </Typography>
         </Box>
-        {props.eventData.isGroupEvent === false
-          ? (<>
-            <Stack direction="row" justifyContent="center" spacing={1} px={2}>
-              <Button
-                variant="contained"
-                onClick={props.editEvent} >
-                Edit
-              </Button>
-              <Button
-                variant="contained"
-                onClick={deleteEvent} >
-                Delete
-              </Button>
-            </Stack>
-          </>)
-          : (<></>)
-        }
+        <Stack direction="row" justifyContent="center" spacing={1} px={2}>
+          <Button
+            variant="contained"
+            onClick={props.editEvent} >
+            Edit
+          </Button>
+          <Button
+            variant="contained"
+            onClick={deleteEvent} >
+            Delete
+          </Button>
+        </Stack>
       </Box>
     </div>
   )
 }
 
-export default EventPopup;
+export default SharedEventPopup;

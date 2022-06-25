@@ -4,6 +4,7 @@ const { auth } = require('../middleware/auth');
 const setUser = require('../middleware/setUser');
 
 const Event = require('../models/Event');
+const SharedEvent = require('../models/SharedEvent');
 
 // Middleware to authenticate and set request user to be same as user in DB
 // req.user --> user (in DB)
@@ -19,6 +20,24 @@ router.get('/', userMW, async (req, res) => {
     return res.status(200).json({
       events: events
     });
+  } catch (err) {
+    console.log('GETTING EVENTS FAILED: ' + err.message);
+    res.status(500).json({ message: 'INTERNAL SERVER ERROR' });
+  }
+})
+
+// GET all shared events of currently logged in user
+router.get('/shared', userMW, async(req, res) => {
+  try {
+    // Find all shared events associated with logged in user id
+    const sharedEvents = await SharedEvent.find({ 
+      accepted: { $in: req.user }
+    }).populate('group', 'name');
+    
+    // console.log('GETTING EVENTS: ' + events);
+    return res.status(200).json({ 
+      sharedEvents: sharedEvents
+    }); 
   } catch (err) {
     console.log('GETTING EVENTS FAILED: ' + err.message);
     res.status(500).json({ message: 'INTERNAL SERVER ERROR' });
