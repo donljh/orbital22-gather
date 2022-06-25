@@ -10,7 +10,6 @@ import Main from './components/layout/Main';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-import Protected from './pages/Protected';
 import Calendar from './pages/Calendar';
 import TaskManager from './pages/TaskManager';
 import Groups from './pages/Groups'
@@ -37,7 +36,6 @@ function App() {
             <Route path='taskmanager' element={<ProtectedRoute> <TaskManager /> </ProtectedRoute>} />
             <Route path='groups' element={<ProtectedRoute> <Groups /> </ProtectedRoute>} />
             <Route path='profile' element={<ProtectedRoute> <Profile /> </ProtectedRoute>} />
-            <Route path='protected' element={<ProtectedRoute> <Protected /> </ProtectedRoute>} />
           </Route>
         </Route>
 

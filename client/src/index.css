@@ -1,101 +1,53 @@
 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 body {
-  background-image: linear-gradient(to bottom right, #e15a47, #318ba3, #743192);
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	background-image: linear-gradient(to bottom right, #e15a47, #318ba3, #743192);
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+		"Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 .app {
-  /* text-align: center; */
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 16px;
-}
-
-.login-wrapper {
-  min-height: 200px;
-  min-width: 300px;
-  background: white;
-  padding: 20px;
-  border-top: 5px lightblue solid;
-  color: black;
-  border-radius: 20px 20px;
-}
-
-.login-input button {
-  background: lightblue;
-  display: block;
-  width: 100%;
-  height: 50px;
-  border-radius: 10px 10px;
-}
-
-.login-input input {
-  display: block;
-  padding: 20px;
-  width: 100%;
-  height: 50px;
-  margin: 10px 0;
-  box-sizing: border-box;
-  border-radius: 20px 20px;
+	/* text-align: center; */
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	color: white;
+	font-size: 16px;
 }
 
 ul {
-  list-style-type: none;
-  margin: 40px auto;
-  width: 300px;
-  padding: 0;
+	list-style-type: none;
+	margin: 40px auto;
+	width: 300px;
+	padding: 0;
 }
 
 ul li {
-  display: inline-block;
-  margin: 10px;
-}
-
-.protected button,
-button.logout {
-  width: 250px;
-  height: 50px;
-  margin-bottom: 25px;
-  background: transparent;
-  color: white;
-  font-size: 12px;
-  border: 3px solid black;
-  border-radius: 5px;
-  text-transform: uppercase;
-  font-weight: bold;
-  transition: ease-in-out 0.2s;
-}
-
-.protected button:hover,
-button.logout:hover {
-  box-shadow: inset 250px 0 0 0 rgba(0,0,0, 0.75);
+	display: inline-block;
+	margin: 10px;
 }
 
 a {
-  color: #318ba3;
-  text-decoration: none;
+	color: #318ba3;
+	text-decoration: none;
 }
 
 .fc .fc-col-header-cell-cushion {
-  color: #ffffff;
+	color: #ffffff;
 }
 
 .fc .fc-daygrid-day-number {
-  color: #ffffff;
+	color: #ffffff;
 }
 
 .fc .fc-daygrid-day.fc-day-today {
-  background-color: rgba(255, 255, 255, 0.12) !important;
+	background-color: rgba(255, 255, 255, 0.12) !important;
 }
