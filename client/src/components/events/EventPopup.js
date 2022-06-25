@@ -52,18 +52,23 @@ const EventPopup = (props) => {
             <b>End</b>: {props.eventData.end}
           </Typography>
         </Box>
-        <Stack direction="row" justifyContent="center" spacing={1} px={2}>
-          <Button
-            variant="contained"
-            onClick={props.editEvent} >
-            Edit
-          </Button>
-          <Button
-            variant="contained"
-            onClick={deleteEvent} >
-            Delete
-          </Button>
-        </Stack>
+        {props.eventData.isGroupEvent === false
+          ? (<>
+            <Stack direction="row" justifyContent="center" spacing={1} px={2}>
+              <Button
+                variant="contained"
+                onClick={props.editEvent} >
+                Edit
+              </Button>
+              <Button
+                variant="contained"
+                onClick={deleteEvent} >
+                Delete
+              </Button>
+            </Stack>
+          </>)
+          : (<></>)
+        }
       </Box>
     </div>
   )

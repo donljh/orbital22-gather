@@ -58,7 +58,8 @@ const Calendar = () => {
       description: arg.event.extendedProps.description,
       start: newStartDate.toLocaleDateString(undefined, dateOptions),
       end: newEndDate.toLocaleDateString(undefined, dateOptions),
-      id: arg.event.extendedProps._id
+      id: arg.event.extendedProps._id,
+      isGroupEvent: arg.event.extendedProps.isGroupEvent
     });
     openEvent();
   }
@@ -92,6 +93,7 @@ const Calendar = () => {
       let data = response.data.events.map((e) => {
         e.start = e.startDate;
         e.end = e.endDate;
+        e.isGroupEvent = false;
         return e;
       });
       setEventsArray(data);
@@ -102,8 +104,10 @@ const Calendar = () => {
       let data = response.data.sharedEvents.map((e) => {
         e.start = e.startDate;
         e.end = e.endDate;
+        e.isGroupEvent = true;
         return e;
       });
+      console.log(data);
       setSharedEventsArray(data);
     })
   }, [axiosRes, isEventsModified])
@@ -145,12 +149,12 @@ const Calendar = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <EventPopup
+        <div><EventPopup
           eventData={eventData}
           closeEvent={closeEvent}
           editEvent={editEvent}
           setIsEventsModified={setIsEventsModified}
-        />
+        /></div>
       </Modal>
       <Modal
         open={createOpen}
@@ -158,11 +162,11 @@ const Calendar = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <CreateEventForm
+        <div><CreateEventForm
           initDate={initDate}
           setIsEventsModified={setIsEventsModified}
           closeForm={closeCreate}
-        />
+        /></div>
       </Modal>
       <Modal
         open={formOpen}
@@ -170,11 +174,11 @@ const Calendar = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <EditEventForm
+        <div><EditEventForm
           eventData={eventData}
           setIsEventsModified={setIsEventsModified}
           closeForm={closeForm}
-        />
+        /></div>
       </Modal>
     </div>
   )

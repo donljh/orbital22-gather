@@ -136,13 +136,13 @@ const GroupCalendar = (props) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <SharedEventPopup
+        <div><SharedEventPopup
           eventData={eventData}
           closeEvent={closeEvent}
           editEvent={editEvent}
           setIsEventsModified={setIsEventsModified}
           groupID={groupID}
-        />
+        /></div>
       </Modal>
       <Modal
         open={createOpen}
@@ -150,12 +150,12 @@ const GroupCalendar = (props) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <CreateSharedEventForm
+        <div><CreateSharedEventForm
           initDate={initDate}
           setIsEventsModified={setIsEventsModified}
           closeForm={closeCreate}
           groupID={groupID}
-        />
+        /></div>
       </Modal>
       <Modal
         open={formOpen}
@@ -163,12 +163,12 @@ const GroupCalendar = (props) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <EditSharedEventForm
+        <div><EditSharedEventForm
           eventData={eventData}
           setIsEventsModified={setIsEventsModified}
           closeForm={closeForm}
           groupID={groupID}
-        />
+        /></div>
       </Modal>
     </div>
   )
