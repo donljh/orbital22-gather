@@ -226,4 +226,6 @@ router.patch('/:group_id/leave', userMW, async(req, res) => {
 
 router.use('/:group_id/sharedtasks', require('./sharedtasks'))
 
+router.use('/:group_id/sharedevents', require('./sharedevents'))
+
 module.exports = router;
