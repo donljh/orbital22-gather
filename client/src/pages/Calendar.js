@@ -1,16 +1,16 @@
-import React, { createRef, useEffect, useState } from 'react'
-import useAxiosRes from '../hooks/useAxiosRes';
+import React, { createRef, useEffect, useState } from "react";
+import useAxiosRes from "../hooks/useAxiosRes";
 
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from "@fullcalendar/interaction"
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 
-import EventPopup from '../components/events/EventPopup';
-import CreateEventForm from '../components/events/CreateEventForm';
-import EditEventForm from '../components/events/EditEventForm';
+import EventPopup from "../components/events/EventPopup";
+import CreateEventForm from "../components/events/CreateEventForm";
+import EditEventForm from "../components/events/EditEventForm";
 
 const Calendar = () => {
 
