@@ -14,7 +14,7 @@ const userMW = [auth, setUser];
 router.get("/", userMW, async (req, res) => {
   try {
     // Find all tasks associated with logged in user id
-    const tasks = await Task.find({ user: req.user.id });
+    const tasks = await Task.find({ user: req.user.id }).populate("tags");
 
     const overdueTasks = [];
     const todayTasks = [];
