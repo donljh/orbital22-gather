@@ -31,7 +31,7 @@ const Header = (props) => {
   const [createTaskFormOpen, setCreateTaskFormOpen] = useState(false);
   const [createTagFormOpen, setCreateTagFormOpen] = useState(false);
 
-  const { selectedCategory } = props;
+  const { selectedCategory, tags } = props;
 
   const openCreateTaskForm = () => setCreateTaskFormOpen(true);
   const closeCreateTaskForm = () => setCreateTaskFormOpen(false);
@@ -100,13 +100,16 @@ const Header = (props) => {
 
       <Modal open={createTaskFormOpen} onClose={closeCreateTaskForm}>
         <Box sx={modalStyle}>
-          <CreateTaskForm setIsTaskListModified={props.setIsTaskListModified} />
+          <CreateTaskForm
+            setIsTaskListModified={props.setIsTaskListModified}
+            tags={tags}
+          />
         </Box>
       </Modal>
 
       <Modal open={createTagFormOpen} onClose={closeCreateTagForm}>
         <Box sx={modalStyle}>
-          <CreateTagForm />
+          <CreateTagForm setIsTagListModified={props.setIsTagListModified} />
         </Box>
       </Modal>
     </>
@@ -114,7 +117,7 @@ const Header = (props) => {
 };
 
 const TaskPanel = (props) => {
-  const { category, selectedCategory, tasks, sharedTasks } = props;
+  const { category, selectedCategory, tasks, sharedTasks, tags } = props;
 
   return category !== selectedCategory ? (
     <></>
@@ -123,6 +126,7 @@ const TaskPanel = (props) => {
       <Header
         selectedCategory={selectedCategory}
         setIsTaskListModified={props.setIsTaskListModified}
+        tags={tags}
       />
       <Stack py={"1.5rem"} spacing={"1.5rem"} mx={2}>
         {sharedTasks.map((task) => (

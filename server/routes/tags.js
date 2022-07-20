@@ -27,6 +27,7 @@ router.get("/", userMW, async (req, res) => {
 router.post("/", userMW, async (req, res) => {
   try {
     const { name, colorHex } = req.body;
+    console.log(name, colorHex);
 
     if (!name || !colorHex)
       return res
@@ -38,7 +39,6 @@ router.post("/", userMW, async (req, res) => {
       name,
       colorHex,
     });
-
     return res.status(200).json(tag);
   } catch (err) {
     console.log("CREATING TAG FAILED: " + err.message);

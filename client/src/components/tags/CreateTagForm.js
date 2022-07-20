@@ -1,9 +1,25 @@
 import { Button, Stack, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
+import useAxiosRes from "../../hooks/useAxiosRes";
 
-const CreateTagForm = () => {
+const CreateTagForm = (props) => {
   const [name, setName] = useState("");
-  const [colorHex, setColorHex] = useState("");
+  const [colorHex, setColorHex] = useState("#000000");
+
+  const axiosRes = useAxiosRes();
+  const createNewTag = async () => {
+    console.log(colorHex);
+    axiosRes
+      .post("/tags", { name, colorHex })
+      .then((res) => {
+        setName("");
+        setColorHex("#000000");
+        props.setIsTagListModified(true);
+      })
+      .catch((err) => {
+        console.log(err.data);
+      });
+  };
 
   return (
     <form>
@@ -31,10 +47,10 @@ const CreateTagForm = () => {
         disableRipple
         variant="contained"
         color="success"
-        // onClick={}
-        disabled={!NamedNodeMap}
+        onClick={createNewTag}
+        disabled={!name}
       >
-        Create Task
+        Create Tag
       </Button>
     </form>
   );
