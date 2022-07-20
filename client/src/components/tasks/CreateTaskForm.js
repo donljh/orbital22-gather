@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
@@ -16,7 +16,7 @@ const CreateTaskForm = (props) => {
     title: "",
     description: "",
     dueDate: Date.now(),
-    tagId: "",
+    tagId: [],
   };
 
   const tags = props.tags;
@@ -25,7 +25,7 @@ const CreateTaskForm = (props) => {
 
   const { title, description, dueDate, tagId } = taskData;
 
-  const handleTextFieldChange = (e) => {
+  const handleTaskDataChange = (e) => {
     setTaskData({ ...taskData, [e.target.name]: e.target.value });
   };
 
@@ -41,10 +41,6 @@ const CreateTaskForm = (props) => {
       .catch((err) => console.log(err.data));
   };
 
-  useEffect(() => {
-    console.log(tags);
-  });
-
   return (
     <form>
       <Stack mb={4} spacing={4}>
@@ -54,7 +50,7 @@ const CreateTaskForm = (props) => {
         <TextField
           name="title"
           value={title}
-          onChange={handleTextFieldChange}
+          onChange={handleTaskDataChange}
           label="Title"
           variant="outlined"
           required
@@ -62,7 +58,7 @@ const CreateTaskForm = (props) => {
         <TextField
           name="description"
           value={description}
-          onChange={handleTextFieldChange}
+          onChange={handleTaskDataChange}
           label="Description"
           multiline
           variant="outlined"
@@ -82,10 +78,11 @@ const CreateTaskForm = (props) => {
         <FormControl>
           <InputLabel>Tag</InputLabel>
           <Select
+            multiple
             value={tagId}
-            label="Tag"
+            label="Tags"
             name="tagId"
-            onChange={handleTextFieldChange}
+            onChange={handleTaskDataChange}
           >
             {tags.map((tag) => (
               <MenuItem key={tag._id} value={tag._id}>
