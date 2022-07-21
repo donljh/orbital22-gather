@@ -27,6 +27,8 @@ const TaskManager = () => {
   const [tags, setTags] = useState([]);
   const [isTagListModified, setIsTagListModified] = useState(false);
 
+  const [selectedTag, setSelectedTag] = useState("all");
+
   const axiosRes = useAxiosRes();
 
   // Handles the category of tasks to be displayed
@@ -97,8 +99,10 @@ const TaskManager = () => {
           sharedTasks={category[2]}
           selectedCategory={selectedCategory}
           setIsTaskListModified={setIsTaskListModified}
-          tags={tags}
           setIsTagListModified={setIsTagListModified}
+          tags={tags}
+          selectedTag={selectedTag}
+          setSelectedTag={setSelectedTag}
         />
       ))}
     </>

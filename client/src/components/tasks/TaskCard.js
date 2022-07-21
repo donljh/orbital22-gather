@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import useAxiosRes from "../../hooks/useAxiosRes";
 
 import EditTaskForm from "./EditTaskForm";

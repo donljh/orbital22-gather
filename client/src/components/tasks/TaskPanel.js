@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import CreateTagForm from "../tags/CreateTagForm";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 const modalStyle = {
   position: "absolute",
@@ -117,7 +118,15 @@ const Header = (props) => {
 };
 
 const TaskPanel = (props) => {
-  const { category, selectedCategory, tasks, sharedTasks, tags } = props;
+  const {
+    category,
+    selectedCategory,
+    tasks,
+    sharedTasks,
+    tags,
+    selectedTag,
+    setSelectedTag,
+  } = props;
 
   return category !== selectedCategory ? (
     <></>
@@ -129,6 +138,22 @@ const TaskPanel = (props) => {
         tags={tags}
       />
       <Stack py={"1.5rem"} spacing={"1.5rem"} mx={2}>
+        <FormControl focused sx={{ maxWidth: 200, borderColor: "orange" }}>
+          <InputLabel>View By Tag</InputLabel>
+          <Select
+            label="View By Tag"
+            sx={{ color: "white" }}
+            value={selectedTag}
+            onChange={(e) => setSelectedTag(e.target.value)}
+          >
+            <MenuItem value="all" defaultChecked>
+              All
+            </MenuItem>
+            {tags.map((tag) => (
+              <MenuItem value={tag._id}>{tag.name}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         {sharedTasks.map((task) => (
           <TaskCard
             task={task}
@@ -137,14 +162,19 @@ const TaskPanel = (props) => {
             setIsTaskListModified={props.setIsTaskListModified}
           />
         ))}
-        {tasks.map((task) => (
-          <TaskCard
-            task={task}
-            key={task._id}
-            setIsTaskListModified={props.setIsTaskListModified}
-            createdTags={tags}
-          />
-        ))}
+        {tasks.map((task) =>
+          task.tags.some((tag) => tag._id === selectedTag) ||
+          selectedTag === "all" ? (
+            <TaskCard
+              task={task}
+              key={task._id}
+              setIsTaskListModified={props.setIsTaskListModified}
+              createdTags={tags}
+            />
+          ) : (
+            <></>
+          )
+        )}
       </Stack>
     </Box>
   );
