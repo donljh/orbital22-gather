@@ -76,7 +76,7 @@ const CreateTaskForm = (props) => {
           />
         </LocalizationProvider>
         <FormControl>
-          <InputLabel>Tag</InputLabel>
+          <InputLabel>Tags</InputLabel>
           <Select
             multiple
             value={tagId}

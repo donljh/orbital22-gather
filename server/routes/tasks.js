@@ -139,6 +139,9 @@ router.patch("/:task_id", userMW, async (req, res) => {
   try {
     // Get user input from request body
     const input = Object.entries(req.body);
+    console.log("======================");
+    console.log(input);
+    console.log("======================");
 
     let task = await Task.findById(req.params.task_id);
 

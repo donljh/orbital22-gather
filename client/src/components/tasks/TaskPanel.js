@@ -142,6 +142,7 @@ const TaskPanel = (props) => {
             task={task}
             key={task._id}
             setIsTaskListModified={props.setIsTaskListModified}
+            createdTags={tags}
           />
         ))}
       </Stack>

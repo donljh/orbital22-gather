@@ -115,8 +115,6 @@ const PersonalTaskCard = (props) => {
     month: "short",
   });
 
-  useEffect(() => console.log(tags));
-
   const completeTask = () => {
     axiosRes
       .delete(`/task/${_id}`)
@@ -145,6 +143,7 @@ const PersonalTaskCard = (props) => {
               {title + " "}
               {tags.map((tag) => (
                 <Chip
+                  key={tag._id}
                   label={`${tag.name}`}
                   variant="outlined"
                   size="small"
@@ -188,6 +187,7 @@ const PersonalTaskCard = (props) => {
           <EditTaskForm
             task={props.task}
             setIsTaskListModified={props.setIsTaskListModified}
+            createdTags={props.createdTags}
           />
         </Box>
       </Modal>
