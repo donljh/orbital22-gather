@@ -33,10 +33,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const logout = useLogout();
 
-  const handleFeatureLinkClick = (e) => {
-    navigate(`/${e.target.value}`);
-  };
-
   const handleProfileLinkClick = (e) => {
     navigate("/profile");
     closeProfileMenu();

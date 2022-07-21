@@ -11,8 +11,16 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import ClearIcon from "@mui/icons-material/Clear";
 import CreateTagForm from "../tags/CreateTagForm";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
+import useAxiosRes from "../../hooks/useAxiosRes";
 
 const modalStyle = {
   position: "absolute",
@@ -128,6 +136,19 @@ const TaskPanel = (props) => {
     setSelectedTag,
   } = props;
 
+  const axiosRes = useAxiosRes();
+
+  const deleteTag = async (tagId) => {
+    await axiosRes
+      .delete(`tags/${tagId}`)
+      .then((response) => {
+        props.setIsTagListModified(true);
+        props.setIsTaskListModified(true);
+        setSelectedTag("all");
+      })
+      .catch((err) => console.log(err));
+  };
+
   return category !== selectedCategory ? (
     <></>
   ) : (
@@ -135,6 +156,7 @@ const TaskPanel = (props) => {
       <Header
         selectedCategory={selectedCategory}
         setIsTaskListModified={props.setIsTaskListModified}
+        setIsTagListModified={props.setIsTagListModified}
         tags={tags}
       />
       <Stack py={"1.5rem"} spacing={"1.5rem"} mx={2}>
@@ -152,6 +174,9 @@ const TaskPanel = (props) => {
             {tags.map((tag) => (
               <MenuItem key={tag._id} value={tag._id}>
                 {tag.name}
+                <IconButton onClick={() => deleteTag(tag._id)} edge="end">
+                  <ClearIcon />
+                </IconButton>
               </MenuItem>
             ))}
           </Select>

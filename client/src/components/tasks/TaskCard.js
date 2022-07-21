@@ -147,7 +147,11 @@ const PersonalTaskCard = (props) => {
                   label={`${tag.name}`}
                   variant="outlined"
                   size="small"
-                  sx={{ color: tag.colorHex, borderColor: tag.colorHex }}
+                  sx={{
+                    color: "white",
+                    borderColor: tag.colorHex,
+                    backgroundColor: tag.colorHex,
+                  }}
                 ></Chip>
               ))}
             </Typography>
