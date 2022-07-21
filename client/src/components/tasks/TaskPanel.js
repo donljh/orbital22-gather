@@ -138,7 +138,7 @@ const TaskPanel = (props) => {
         tags={tags}
       />
       <Stack py={"1.5rem"} spacing={"1.5rem"} mx={2}>
-        <FormControl focused sx={{ maxWidth: 200, borderColor: "orange" }}>
+        <FormControl focused sx={{ maxWidth: 200 }}>
           <InputLabel>View By Tag</InputLabel>
           <Select
             label="View By Tag"
@@ -150,7 +150,9 @@ const TaskPanel = (props) => {
               All
             </MenuItem>
             {tags.map((tag) => (
-              <MenuItem value={tag._id}>{tag.name}</MenuItem>
+              <MenuItem key={tag._id} value={tag._id}>
+                {tag.name}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
