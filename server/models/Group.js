@@ -25,9 +25,6 @@ const groupSchema = new mongoose.Schema({
     ],
     validate: [array => array.length > 0, 'No members']
   },
-  announcements: [{
-    type: String
-  }],
   invitations: {
     type: [
       {

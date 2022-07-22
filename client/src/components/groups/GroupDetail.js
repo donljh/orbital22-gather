@@ -8,27 +8,18 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 import CreateNewInvitationModal from './CreateNewInvitationModal'
-import CreateNewAnnouncement from './CreateNewAnnouncement'
 
 import useAxiosRes from '../../hooks/useAxiosRes'
 
 const GroupDetail = (props) => {
-  const { name, members, admins, announcements } = props.group;
+  const { name, members, admins } = props.group;
   const { isUserAdmin, groupID } = props;
   const { setIsGroupListModified, setSelectedGroupID } = props;
-  const { setAnnouncementsModified } = props;
 
   const [open, setOpen] = useState(false);
-  const [openAnnouncement, setOpenAnnouncement] = useState(false);
 
   const openCreateNewInvitationModal = () => setOpen(true);
   const closeCreateNewInvitationModal = () => setOpen(false);
-
-  const openAddAnnouncement = () => setOpenAnnouncement(true);
-  const closeAddAnnouncement = () => {
-    setAnnouncementsModified(true);
-    setOpenAnnouncement(false);
-  }
 
   const axiosRes = useAxiosRes();
 
@@ -66,27 +57,6 @@ const GroupDetail = (props) => {
           <Button color="error" variant="outlined" onClick={leaveGroup}>Leave Group</Button>
           {isUserAdmin && <Button color="error" variant="outlined" onClick={deleteGroup}>Delete Group</Button>}
         </CardActions>
-      </Card>
-      <Card sx={{ background: "#282828" }}>
-        <CardContent>
-          <Stack direction="row" spacing={3} mb={1}>
-            <Typography variant="h6" color="lightgrey" gutterBottom>Announcements</Typography>
-            <Button size="small" color="success" 
-            variant="contained" sx={{ borderRadius: '18px' }}
-            onClick={openAddAnnouncement}>Add</Button>
-          </Stack>
-          <Grid container spacing={2} width={'100%'}>
-            {announcements.map(announcement => (
-              <Grid key={announcement} item xs={12}>
-                <Card sx={{ background: "#505050" }}>
-                  <CardContent>
-                    <Typography variant="subtitles" color="#e2e2e2">{announcement}</Typography>
-                  </CardContent>
-                </Card>
-              </Grid>)
-            )}
-          </Grid>
-        </CardContent>
       </Card>
       <Card sx={{ background: "#282828" }}>
         <CardContent>
@@ -131,7 +101,6 @@ const GroupDetail = (props) => {
       </Card>
 
       <CreateNewInvitationModal groupID={groupID} open={open} onClose={closeCreateNewInvitationModal}/>
-      <CreateNewAnnouncement groupID={groupID} open={openAnnouncement} onClose={closeAddAnnouncement}/>
     </Stack>
   )
 }

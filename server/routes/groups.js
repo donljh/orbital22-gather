@@ -39,8 +39,7 @@ router.post('/', userMW, async (req, res) => {
     const group = await Group.create({
       name: groupName,
       admins: [req.user],
-      members: [req.user],
-      announcements: ["init"]
+      members: [req.user]
     })
 
     console.log('CREATING GROUP: ' + group);
@@ -125,28 +124,6 @@ router.get('/:group_id', userMW, async(req, res) => {
   } catch (err) {
     console.log('GETTING GROUP FAILED: ' + err.message);
     res.status(500).json({ message: 'INTERNAL SERVER ERROR' });
-  }
-})
-
-// PATCH a group announcement
-router.patch('/:group_id/announcement', userMW, async (req, res) => {
-  try {
-    console.log(req.user.id);
-
-    const group = await Group.findById(req.params.group_id);
-
-    // Get user input from request body
-    const { message } = req.body;
-
-    group.announcements = [...group.announcements, message];
-    console.log("announcements: " + group.announcements);    
-    await group.save();
-
-    console.log('CREATED ANNOUNCEMENT: ' + message);
-    return res.status(201).json(message);
-  } catch (err) {
-    console.log('CREATING ANNOUNCEMENT FAILED: ' + err.message);
-    return res.status(500).json({ message: 'INTERNAL SERVER ERROR' });
   }
 })
 

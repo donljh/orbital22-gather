@@ -14,7 +14,6 @@ const GroupContent = (props) => {
   const [selectedContent, setSelectedContent] = useState('details');
   const { isGroupListModified, setIsGroupListModified, setSelectedGroupID } = props;
 
-  const [announcementsModified, setAnnouncementsModified] = useState(false);
 
   const { groupID } = props;
 
@@ -27,18 +26,16 @@ const GroupContent = (props) => {
   useEffect(() => {
     axiosRes.get(`/group/${groupID}`)
       .then(response => {
-        setAnnouncementsModified(false);
         setGroup(response.data.group)
         setIsUserAdmin(response.data.isUserAdmin)
       })
       .catch(console.log);
-  }, [axiosRes, groupID, announcementsModified])
+  }, [axiosRes, groupID])
 
   let SelectedContentComponent = <></>;
   if (selectedContent === 'details') {
     SelectedContentComponent = <GroupDetail
       groupID={groupID} group={group} isUserAdmin={isUserAdmin} 
-      setAnnouncementsModified = {setAnnouncementsModified}
       isGroupListModified={isGroupListModified} 
       setIsGroupListModified={setIsGroupListModified} 
       setSelectedGroupID={setSelectedGroupID} />
